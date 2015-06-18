@@ -8,16 +8,14 @@ const double PI  = 3.141592653589793;
 class Sphere: public Shape {
 
 public:
-  Sphere(): center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {} 
-  Sphere(glm::vec3 const& c, double r): center_{c}, radius_{r} {}
+  Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {} 
+  Sphere(glm::vec3 const& c, double r) : Shape{}, center_{c}, radius_{r} {}
 
-  glm::vec3 center() const {
-    return center_;
-  }
+  Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, double r) :
+    Shape{clr, n}, center_{c}, radius_{r} {}
 
-  double radius() const {
-    return radius_;
-  }
+  glm::vec3 center() const { return center_; }
+  double radius() const { return radius_; }
 
   /* virtual */ double area() const override {
     return 4.0 * PI * (radius_ * radius_);
