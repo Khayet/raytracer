@@ -12,5 +12,26 @@ Sphere::Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, doubl
 }
 
 /* virtual */ double Sphere::volume() const {
-    return 4.0/3.0 * PI * (radius_ * radius_ * radius_);
+  return 4.0/3.0 * PI * (radius_ * radius_ * radius_);
+}
+
+/* virtual */ std::ostream& Sphere::print(std::ostream& os) const {
+  os << "\n";
+  os << "Sphere \"" << name() << "\" : \n";
+  os << "  name    :  " << name() << "\n";
+  os << "  color   :  " << color();
+
+  os << "  center  :  "
+    << "(" << center().x << "," << center().y << "," 
+    << center().z << ")" << "\n"; 
+
+  os << "  radius  :  " << radius() << "\n";
+  os << "  area    :  " << area() << "\n";
+  os << "  volume  :  " << volume() << "\n";
+
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, Sphere const& sph) {
+  sph.print(os);
 }

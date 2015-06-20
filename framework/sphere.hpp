@@ -19,9 +19,13 @@ public:
   /* virtual */ double area() const override;
   /* virtual */ double volume() const override;
 
+  /* virtual */ std::ostream& print(std::ostream&) const override;
+
 private:
   glm::vec3 center_;
   double radius_;
 };
+
+std::ostream& operator<<(std::ostream&, Sphere const&);
 
 #endif

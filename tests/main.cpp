@@ -54,7 +54,7 @@ TEST_CASE("aufgabe 6.3", "[shapes]") {
   REQUIRE(Approx(0.02) == sph3.color().b);
 }
 
-TEST_CASE("aufgabe6.4", "[print]") {
+TEST_CASE("aufgabe 6.4", "[print]") {
   Sphere sph1{Color{1.0, 0.55, 0.093}, {"tennis ball"}, glm::vec3{}, 5.12};
   sph1.print(std::cout);
 
@@ -62,6 +62,18 @@ TEST_CASE("aufgabe6.4", "[print]") {
     glm::vec3{}, glm::vec3{2.0, 3.0, 0.33}};
   
   std::cout << box1;
+}
+
+TEST_CASE("aufgabe 6.5", "[print_overload]") {
+  Box box{Color{1.0, 0.0, 0.0}, {"red box"}, 
+    glm::vec3{0.0, 0.0, 0.0}, glm::vec3{2.0, 2.0, 2.0}};
+
+  std::cout << box;
+
+  Sphere sph{Color{0.0, 0.0, 1.0}, {"blue sphere"},
+   glm::vec3{0.0, 0.0, 0.0}, 3.242};
+
+  std::cout << sph;
 }
 
 int main(int argc, char *argv[])

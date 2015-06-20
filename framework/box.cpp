@@ -23,3 +23,25 @@ Box::Box(Color const& clr, std::string const& n,
     * std::abs(max_.y - min_.y) 
     * std::abs(max_.z - min_.z);
 }
+
+/* virtual */ std::ostream& Box::print(std::ostream& os) const {
+  os << "\n";
+  os << "Box \"" << name() << "\" : \n";
+  os << "  name    :  " << name() << "\n";
+  os << "  color   :  " << color();
+
+  os << "  minimum :  " 
+    << "(" << min().x << "," << min().y << "," << min().z << ")" << "\n";
+  
+  os << "  maximum :  "
+    << "(" << max().x << "," << max().y << "," << max().z << ")" << "\n";
+      
+  os << "  area    :  " << area() << "\n";
+  os << "  volume  :  " << volume() << "\n";
+
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, Box const& b) {
+  b.print(os);
+}

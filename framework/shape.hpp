@@ -11,7 +11,7 @@ class Shape {
 
 public:
   Shape();
-  Shape(Color const& c, std::string const& n);
+  Shape(Color const&, std::string const&);
 
   Color color() const { return color_; }
   std::string name() const { return name_; }
@@ -19,13 +19,13 @@ public:
   virtual double area() const = 0;
   virtual double volume() const = 0;
 
-  virtual std::ostream& print(std::ostream& os) const;
+  virtual std::ostream& print(std::ostream&) const;
 
 private:
   std::string name_;
   Color color_;
 };
 
-std::ostream& operator<<(std::ostream& os, Shape const& s);
+std::ostream& operator<<(std::ostream&, Shape const&);
 
 #endif 
