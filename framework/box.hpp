@@ -11,6 +11,7 @@ public:
   Box(glm::vec3 const& min, glm::vec3 const& max);
   Box(Color const& clr, std::string const& n,
     glm::vec3 const& min, glm::vec3 const& max);
+  ~Box();
 
   glm::vec3 min() const { return min_; }
   glm::vec3 max() const { return max_; }

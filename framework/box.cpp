@@ -3,14 +3,18 @@
 Box::Box() : 
     Shape{},
     min_{glm::vec3{0.0, 0.0, 0.0}},
-    max_{glm::vec3{0.0, 0.0, 0.0}} {}
+    max_{glm::vec3{0.0, 0.0, 0.0}} { std::cout << "ctor box ()" << "\n"; }
 
 Box::Box(glm::vec3 const& min, glm::vec3 const& max) : 
-    Shape{}, min_{min}, max_{max} {}
+    Shape{}, min_{min}, max_{max} { std::cout << "ctor box (min, max)" << "\n"; }
 
 Box::Box(Color const& clr, std::string const& n,
     glm::vec3 const& min, glm::vec3 const& max) :
-    Shape{clr, n}, min_{min}, max_{max} {}
+    Shape{clr, n}, min_{min}, max_{max} {
+      std::cout << "ctor box (color, name, min, max)" << "\n";
+    }
+
+Box::~Box() { std::cout << "Box::~Box" << "\n"; }
 
 /* virtual */ double Box::area() const {
     // 6*(area of one side)

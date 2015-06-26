@@ -12,6 +12,8 @@ public:
   Sphere();
   Sphere(glm::vec3 const& c, double r);
   Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, double r);
+  Sphere(glm::vec3 const&, double, Color const&, std::string const&);
+  ~Sphere();
 
   glm::vec3 center() const { return center_; }
   double radius() const { return radius_; }

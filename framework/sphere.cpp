@@ -1,11 +1,24 @@
 #include "sphere.hpp"
 
-Sphere::Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {} 
+Sphere::Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {
+  std::cout << "ctor sphere ()" << "\n";
+  }  
 Sphere::Sphere(glm::vec3 const& c, double r) : 
-  Shape{}, center_{c}, radius_{r} {}
+  Shape{}, center_{c}, radius_{r} {
+    std::cout << "ctor sphere (center, radius)" << "\n";
+  }
 
 Sphere::Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, double r) :
-    Shape{clr, n}, center_{c}, radius_{r} {}
+    Shape{clr, n}, center_{c}, radius_{r} {
+      std::cout << "ctor sphere (color, name, center, radius)" << "\n";
+    }
+
+Sphere::Sphere(glm::vec3 const& c, double r, Color const& clr, std::string const& n) :
+    Shape{clr, n}, center_{c}, radius_{r} {
+      std::cout << "ctor sphere (center, radius, color, name)" << "\n";
+    }
+
+Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
 
 /* virtual */ double Sphere::area() const {
   return 4.0 * PI * (radius_ * radius_);

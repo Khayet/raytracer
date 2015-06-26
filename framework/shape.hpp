@@ -17,6 +17,8 @@ public:
   Shape();
   Shape(Color const&, std::string const&);
 
+  ~Shape();
+
   Color color() const { return color_; }
   std::string name() const { return name_; }
 
