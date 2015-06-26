@@ -32,6 +32,17 @@ Sphere::Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, doubl
   return os;
 }
 
+bool Sphere::intersect(Ray const& ray, Sphere const& sph, float& dist) {
+  glm::vec3 dir = glm::normalize(ray.direction);
+
+  auto result = glm::intersectRaySphere(
+      ray.origin, dir,
+      sph.center(), sph.radius()*sph.radius(),
+      dist);
+
+  return result;
+}
+
 std::ostream& operator<<(std::ostream& os, Sphere const& sph) {
   sph.print(os);
 }

@@ -16,10 +16,12 @@ public:
   glm::vec3 center() const { return center_; }
   double radius() const { return radius_; }
 
-  /* virtual */ double area() const override;
-  /* virtual */ double volume() const override;
+  /* virtual */ double area() const /* override */;
+  /* virtual */ double volume() const /* override */;
 
-  /* virtual */ std::ostream& print(std::ostream&) const override;
+  /* virtual */ std::ostream& print(std::ostream&) const /* override */;
+
+  bool intersect(Ray const&, Sphere const&, float&);
 
 private:
   glm::vec3 center_;

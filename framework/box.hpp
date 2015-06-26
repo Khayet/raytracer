@@ -15,10 +15,10 @@ public:
   glm::vec3 min() const { return min_; }
   glm::vec3 max() const { return max_; }
 
-  /* virtual */ double area() const override;
-  /* virtual */ double volume() const override;
+  /* virtual */ double area() const /* override */;
+  /* virtual */ double volume() const /* override */;
 
-  /* virtual */ std::ostream& print(std::ostream&) const override;
+  /* virtual */ std::ostream& print(std::ostream&) const /* override */;
 
 private:
   glm::vec3 min_;

@@ -2,10 +2,14 @@
 #define SHAPE_HPP
 
 #include <string>
-#include <glm/vec3.hpp>
 #include <ostream>
-#include "color.hpp"
 
+#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/intersect.hpp>
+
+#include "color.hpp"
+#include "ray.hpp"
 
 class Shape {
 
