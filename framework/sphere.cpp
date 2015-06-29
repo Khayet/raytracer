@@ -48,12 +48,12 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
 bool Sphere::intersect(Ray const& ray, Sphere const& sph, float& dist) {
   glm::vec3 dir = glm::normalize(ray.direction);
 
-  auto result = glm::intersectRaySphere(
+  return glm::intersectRaySphere(
       ray.origin, dir,
       sph.center(), sph.radius()*sph.radius(),
       dist);
 
-  return result;
+  //return result;
 }
 
 std::ostream& operator<<(std::ostream& os, Sphere const& sph) {

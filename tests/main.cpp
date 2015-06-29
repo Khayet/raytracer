@@ -7,7 +7,7 @@
 #include "sphere.hpp"
 #include "box.hpp"
 
-/*
+
 TEST_CASE("aufgabe 6.2", "[shapes]") {
   Sphere sph1{};
   glm::vec3 vec{0.0, 0.0, 0.0};
@@ -108,7 +108,7 @@ TEST_CASE("aufgabe 6.6" , "[intersect]") {
 
   REQUIRE(distance == Approx(5.0f));
 }
-*/
+
 TEST_CASE("aufgabe 6.8", "[virtual]") {
   Color red(255, 0, 0);
   //glm::vec3 position(0,0);
@@ -123,6 +123,14 @@ TEST_CASE("aufgabe 6.8", "[virtual]") {
   delete s1;
   delete s2;
 }
+
+TEST_CASE("aufgabe 6.10", "[intersect]") {
+  Ray ray1{{0.0,0.0,0.0}, {1.0,1.0,1.0}};
+  Box box1{{2.0,2.0,2.0}, {5.0,5.0,5.0}};
+
+  REQUIRE(box1.intersect(ray1));
+}
+
 
 int main(int argc, char *argv[])
 {

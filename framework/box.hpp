@@ -1,8 +1,9 @@
 #ifndef BOX_HPP
 #define BOX_HPP
 
-#include "shape.hpp"
 #include <cmath>
+#include <algorithm>
+#include "shape.hpp"
 
 class Box: public Shape {
 
@@ -20,6 +21,8 @@ public:
   /* virtual */ double volume() const /* override */;
 
   /* virtual */ std::ostream& print(std::ostream&) const /* override */;
+
+  bool intersect(Ray const&) const;
 
 private:
   glm::vec3 min_;
