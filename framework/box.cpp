@@ -48,6 +48,11 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
 }
 
 bool Box::intersect(Ray const& r) const {
+  float foo{0.0};
+  return Box::intersect(r, foo);
+}
+
+bool Box::intersect(Ray const& r, float& dist) const {
   glm::vec3 dir = glm::normalize(r.direction);
 
   /*
@@ -91,8 +96,17 @@ bool Box::intersect(Ray const& r) const {
                   std::max(ty_min, ty_max)), std::max(tz_min, tz_max));
 
   //is there a distance between the two intersection points?
-  return tmax >= std::max(0.0, tmin);
+  if (tmax < std::max(0.0, tmin)) return false;
+
+  //calculate distance with transformed pythagoras:
+  dist = std::sqrt( dir.x*(tmax-tmin)*dir.x*(tmax-tmin) 
+                        + dir.y*(tmax-tmin)*dir.y*(tmax-tmin)
+                        + dir.z*(tmax-tmin)*dir.y*(tmax-tmin) ); 
+
+  return true;
 }
+
+
 
 std::ostream& operator<<(std::ostream& os, Box const& b) {
   b.print(os);

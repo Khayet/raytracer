@@ -128,6 +128,10 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
   Ray ray1{{0.0,0.0,0.0}, {1.0,1.0,1.0}};
   Box box1{{2.0,2.0,2.0}, {5.0,5.0,5.0}};
 
+  float distance{0.0};
+  box1.intersect(ray1, distance);
+  REQUIRE(5.1961526871 == Approx(distance));
+
   REQUIRE(box1.intersect(ray1));
 }
 
