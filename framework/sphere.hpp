@@ -23,7 +23,7 @@ public:
 
   /* virtual */ std::ostream& print(std::ostream&) const /* override */;
 
-  bool intersect(Ray const&, float&);
+  bool intersect(Ray const&, float&)const;
 
 private:
   glm::vec3 center_;

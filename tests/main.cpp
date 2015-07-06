@@ -128,7 +128,7 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
 
   float distance{0.0};
   box1.intersect(ray1, distance);
-  REQUIRE(5.1961526871 == Approx(distance));
+  REQUIRE(3.4641016151377544 == Approx(distance));
 
   REQUIRE(box1.intersect(ray1));
 }
