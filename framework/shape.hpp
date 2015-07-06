@@ -4,9 +4,9 @@
 #include <string>
 #include <ostream>
 
-#include "glm/vec3.hpp"
-#include "glm/glm.hpp"
-#include "glm/gtx/intersect.hpp"
+#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/intersect.hpp>
 #include "material.hpp"
 #include "color.hpp"
 #include "ray.hpp"
