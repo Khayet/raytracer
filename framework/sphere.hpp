@@ -11,8 +11,8 @@ class Sphere: public Shape {
 public:
   Sphere();
   Sphere(glm::vec3 const& c, double r);
-  Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, double r);
-  Sphere(glm::vec3 const&, double, Color const&, std::string const&);
+  Sphere(Material const& material, std::string const& n, glm::vec3 const& c, double r);
+  Sphere(glm::vec3 const&, double, Material const&, std::string const&);
   ~Sphere();
 
   glm::vec3 center() const { return center_; }
@@ -23,13 +23,11 @@ public:
 
   /* virtual */ std::ostream& print(std::ostream&) const /* override */;
 
-  bool intersect(Ray const&, Sphere const&, float&);
+  bool intersect(Ray const&, float&);
 
 private:
   glm::vec3 center_;
   double radius_;
 };
-
-std::ostream& operator<<(std::ostream&, Sphere const&);
 
 #endif

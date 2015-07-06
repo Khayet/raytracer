@@ -8,14 +8,14 @@ Sphere::Sphere(glm::vec3 const& c, double r) :
     std::cout << "ctor sphere (center, radius)" << "\n";
   }
 
-Sphere::Sphere(Color const& clr, std::string const& n, glm::vec3 const& c, double r) :
-    Shape{clr, n}, center_{c}, radius_{r} {
-      std::cout << "ctor sphere (color, name, center, radius)" << "\n";
+Sphere::Sphere(Material const& material, std::string const& n, glm::vec3 const& c, double r) :
+    Shape{material, n}, center_{c}, radius_{r} {
+      std::cout << "ctor sphere (material, name, center, radius)" << "\n";
     }
 
-Sphere::Sphere(glm::vec3 const& c, double r, Color const& clr, std::string const& n) :
-    Shape{clr, n}, center_{c}, radius_{r} {
-      std::cout << "ctor sphere (center, radius, color, name)" << "\n";
+Sphere::Sphere(glm::vec3 const& c, double r, Material const& material, std::string const& n) :
+    Shape{material, n}, center_{c}, radius_{r} {
+      std::cout << "ctor sphere (center, radius, material, name)" << "\n";
     }
 
 Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
@@ -32,7 +32,7 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
   os << "\n";
   os << "Sphere \"" << name() << "\" : \n";
   os << "  name    :  " << name() << "\n";
-  os << "  color   :  " << color();
+  os << "  material   :  " << material();
 
   os << "  center  :  "
     << "(" << center().x << "," << center().y << "," 
@@ -45,17 +45,13 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
   return os;
 }
 
-bool Sphere::intersect(Ray const& ray, Sphere const& sph, float& dist) {
+bool Sphere::intersect(Ray const& ray, float& dist) {
   glm::vec3 dir = glm::normalize(ray.direction);
 
   return glm::intersectRaySphere(
       ray.origin, dir,
-      sph.center(), sph.radius()*sph.radius(),
+      center(), radius()*radius(),
       dist);
 
   //return result;
-}
-
-std::ostream& operator<<(std::ostream& os, Sphere const& sph) {
-  sph.print(os);
 }

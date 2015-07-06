@@ -9,10 +9,10 @@ Box::Box() :
 Box::Box(glm::vec3 const& min, glm::vec3 const& max) : 
     Shape{}, min_{min}, max_{max} { std::cout << "ctor box (min, max)" << "\n"; }
 
-Box::Box(Color const& clr, std::string const& n,
+Box::Box(Material const& material, std::string const& n,
     glm::vec3 const& min, glm::vec3 const& max) :
-    Shape{clr, n}, min_{min}, max_{max} {
-      std::cout << "ctor box (color, name, min, max)" << "\n";
+    Shape{material, n}, min_{min}, max_{max} {
+      std::cout << "ctor box (material, name, min, max)" << "\n";
     }
 
 Box::~Box() { std::cout << "Box::~Box" << "\n"; }
@@ -33,7 +33,7 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
   os << "\n";
   os << "Box \"" << name() << "\" : \n";
   os << "  name    :  " << name() << "\n";
-  os << "  color   :  " << color();
+  os << "  material   :  " << material();
 
   os << "  minimum :  " 
     << "(" << min().x << "," << min().y << "," << min().z << ")" << "\n";
@@ -47,12 +47,12 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
   return os;
 }
 
-bool Box::intersect(Ray const& r) const {
+bool Box::intersect(Ray const& r) {
   float foo{0.0};
   return Box::intersect(r, foo);
 }
 
-bool Box::intersect(Ray const& r, float& dist) const {
+bool Box::intersect(Ray const& r, float& dist) {
   glm::vec3 dir = glm::normalize(r.direction);
 
   /*
@@ -104,10 +104,4 @@ bool Box::intersect(Ray const& r, float& dist) const {
                         + dir.z*(tmax-tmin)*dir.y*(tmax-tmin) ); 
 
   return true;
-}
-
-
-
-std::ostream& operator<<(std::ostream& os, Box const& b) {
-  b.print(os);
 }

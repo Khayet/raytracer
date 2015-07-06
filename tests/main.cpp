@@ -1,11 +1,8 @@
 #define CATCH_CONFIG_RUNNER
-#include <catch.hpp>
+#include "catch.hpp"
 
-#include <glm/glm.hpp>
-#include <glm/gtx/intersect.hpp>
-
-#include "sphere.hpp"
-#include "box.hpp"
+#include "../framework/sphere.hpp"
+#include "../framework/box.hpp"
 
 
 TEST_CASE("aufgabe 6.2", "[shapes]") {
@@ -25,7 +22,7 @@ TEST_CASE("aufgabe 6.2", "[shapes]") {
   REQUIRE(vec == box1.max());
 
   Box box2{
-    Color{0.0, 0.0, 0.0}, std::string{},
+    Material{}, std::string{},
     glm::vec3{0.0, 0.0, 0.0}, glm::vec3{2.0, -2.0, 2.0}
   };
 
@@ -36,12 +33,12 @@ TEST_CASE("aufgabe 6.2", "[shapes]") {
 
 TEST_CASE("aufgabe 6.3", "[shapes]") {
   Box box1{};
-  REQUIRE(Approx(0.0) == box1.color().r);
+
 
   Box box2{glm::vec3{2.0, 33.0, 1.75}, glm::vec3{0.0, 42.0, 2.33}};
   REQUIRE("" == box2.name());
 
-  Box box3{Color{1.0, 0.55, 1.0}, {"box3"}, 
+  Box box3{Material{}, {"box3"}, 
     glm::vec3{2.0, 33.0, 1.75}, glm::vec3{0.0, 42.0, 2.33}};
   REQUIRE("box3" == box3.name());
 
@@ -49,31 +46,31 @@ TEST_CASE("aufgabe 6.3", "[shapes]") {
   REQUIRE("" == sph1.name());
 
   Sphere sph2{glm::vec3{-2.0, 3.0, 11.33}, 0.72};
-  REQUIRE(Approx(0.0) == sph2.color().g);
 
-  Sphere sph3{Color{0.88, 1.0, 0.02}, {"sphere3"}, 
+
+  Sphere sph3{Material{}, {"sphere3"}, 
     glm::vec3{0.0, 0.52, 1.33}, 12};
 
-  REQUIRE(Approx(0.02) == sph3.color().b);
+
 }
 
 TEST_CASE("aufgabe 6.4", "[print]") {
-  Sphere sph1{Color{1.0, 0.55, 0.093}, {"tennis ball"}, glm::vec3{}, 5.12};
+  Sphere sph1{Material{}, {"tennis ball"}, glm::vec3{}, 5.12};
   sph1.print(std::cout);
 
-  Box box1{Color{0.0, 1.0, 0.0}, {"green box"}, 
+  Box box1{Material{}, {"green box"}, 
     glm::vec3{}, glm::vec3{2.0, 3.0, 0.33}};
   
   std::cout << box1;
 }
 
 TEST_CASE("aufgabe 6.5", "[print_overload]") {
-  Box box{Color{1.0, 0.0, 0.0}, {"red box"}, 
+  Box box{Material{}, {"red box"}, 
     glm::vec3{0.0, 0.0, 0.0}, glm::vec3{2.0, 2.0, 2.0}};
 
   std::cout << box;
 
-  Sphere sph{Color{0.0, 0.0, 1.0}, {"blue sphere"},
+  Sphere sph{Material{}, {"blue sphere"},
    glm::vec3{0.0, 0.0, 0.0}, 3.242};
 
   std::cout << sph;
@@ -104,16 +101,17 @@ TEST_CASE("aufgabe 6.6" , "[intersect]") {
   Sphere sph{{0.0,0.0,0.0}, 5.0};
 
   float distance = 0.0;
-  sph.intersect(ray, sph, distance);
+  sph.intersect(ray, distance);
 
   REQUIRE(distance == Approx(5.0f));
 }
 
 TEST_CASE("aufgabe 6.8", "[virtual]") {
-  Color red(255, 0, 0);
+	Color red_color(255,0,0);
+  Material red{red_color, red_color,red_color};
   //glm::vec3 position(0,0);
   glm::vec3 position{0.0,0.0,0.0};
-
+	
   Sphere* s1 = new Sphere(position, 1.2, red, "sphere0");
   Shape* s2 = new Sphere(position, 1.2, red, "sphere1");
 
