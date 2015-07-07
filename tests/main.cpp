@@ -4,7 +4,8 @@
 #include "../framework/sphere.hpp"
 #include "../framework/box.hpp"
 
-
+#include "sdfloader.hpp"
+/*
 TEST_CASE("aufgabe 6.2", "[shapes]") {
   Sphere sph1{};
   glm::vec3 vec{0.0, 0.0, 0.0};
@@ -30,7 +31,6 @@ TEST_CASE("aufgabe 6.2", "[shapes]") {
   REQUIRE(box2.area() == Approx(24.0));
 }
 
-
 TEST_CASE("aufgabe 6.3", "[shapes]") {
   Box box1{};
 
@@ -50,8 +50,6 @@ TEST_CASE("aufgabe 6.3", "[shapes]") {
 
   Sphere sph3{Material{}, {"sphere3"}, 
     glm::vec3{0.0, 0.52, 1.33}, 12};
-
-
 }
 
 TEST_CASE("aufgabe 6.4", "[print]") {
@@ -132,7 +130,12 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
 
   REQUIRE(box1.intersect(ray1));
 }
-
+*/
+TEST_CASE("SDFloader", "[load]") {
+  SDFloader test;
+  std::string filepath = "../framework/res/material_data.sdf";
+  test.load(filepath);
+}
 
 int main(int argc, char *argv[])
 {
