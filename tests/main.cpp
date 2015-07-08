@@ -5,7 +5,7 @@
 #include "../framework/box.hpp"
 
 #include "sdfloader.hpp"
-/*
+
 TEST_CASE("aufgabe 6.2", "[shapes]") {
   Sphere sph1{};
   glm::vec3 vec{0.0, 0.0, 0.0};
@@ -130,7 +130,7 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
 
   REQUIRE(box1.intersect(ray1));
 }
-*/
+
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
   std::string filepath = "../framework/res/material_data.sdf";

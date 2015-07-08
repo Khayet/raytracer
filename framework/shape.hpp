@@ -27,7 +27,7 @@ public:
   virtual double volume() const = 0;
 	
   virtual std::ostream& print(std::ostream&) const;
-	virtual bool intersect(Ray const& ray, float& t)const = 0;
+	virtual bool intersect(Ray const& ray, float& t) const = 0;
 	
 private:
   Material material_;

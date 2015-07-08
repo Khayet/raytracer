@@ -1,11 +1,14 @@
 #ifndef SDFloader_HPP
 #define SDFloader_HPP
 
+#include "shape.hpp"
 #include "material.hpp"
 #include <fstream>
 #include <map>
 #include <iostream>
 #include <string>
+
+
 
 class SDFloader
 {

@@ -101,7 +101,8 @@ bool Box::intersect(Ray const& r, float& dist) const {
   //calculate distance between origin and intersection point:
   dist = std::sqrt( dir.x*(tmin-r.origin.x)*dir.x*(tmin-r.origin.x) 
                         + dir.y*(tmin-r.origin.y)*dir.y*(tmin-r.origin.y)
-                        + dir.z*(tmin-r.origin.z)*dir.y*(tmin-r.origin.z) ); 
+                        + dir.z*(tmin-r.origin.z)*dir.z*(tmin-r.origin.z) ); 
+
 
   return true;
 }
