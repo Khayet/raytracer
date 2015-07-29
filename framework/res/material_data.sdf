@@ -1,2 +1,4 @@
 define material red 1 0 0 1 0 0 1 0 0 1
 define material blue 0 0 1 0 0 1 0 0 1 1 
+define sphere blauerHase 3 3 3 5 blue
+define sphere roterHase 3 3 3 5 red
