@@ -3,6 +3,8 @@
 
 #include "shape.hpp"
 #include "material.hpp"
+#include "box.hpp"
+#include "sphere.hpp"
 #include <fstream>
 #include <map>
 #include <iostream>
@@ -17,6 +19,7 @@ class SDFloader
 
   private:
     std::map<std::string, Material> materials_;
+
 };
 
 #endif

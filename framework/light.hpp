@@ -10,4 +10,4 @@ struct Light {
   float intensity_dif;
 };
 
-#define
+#endif 
