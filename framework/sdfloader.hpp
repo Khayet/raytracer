@@ -2,6 +2,7 @@
 #define SDFloader_HPP
 
 #include "shape.hpp"
+#include "scene.hpp"
 #include "material.hpp"
 #include "box.hpp"
 #include "sphere.hpp"
@@ -11,14 +12,14 @@
 #include <string>
 
 
-
 class SDFloader
 {
   public:
-    void load(std::string const&);
+    Scene load(std::string const&);
 
   private:
-    std::map<std::string, Material> materials_;
+    
+		
 
 };
 

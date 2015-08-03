@@ -3,7 +3,7 @@
 
 #include "../framework/sphere.hpp"
 #include "../framework/box.hpp"
-
+#include "scene.hpp"
 #include "sdfloader.hpp"
 
 TEST_CASE("aufgabe 6.2", "[shapes]") {
@@ -129,12 +129,12 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
   REQUIRE(3.4641016151377544 == Approx(distance));
 
   REQUIRE(box1.intersect(ray1));
-}
+} 
 
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
-  std::string filepath = "../framework/res/material_data.sdf";
-  test.load(filepath);
+  std::string filepath = "../framework/res/render_scene.sdf";
+  Scene loaded(test.load(filepath));
 }
 
 int main(int argc, char *argv[])
