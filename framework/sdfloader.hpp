@@ -11,16 +11,12 @@
 #include <iostream>
 #include <string>
 
-
 class SDFloader
 {
   public:
     Scene load(std::string const&);
 
   private:
-    
-		
-
 };
 
 #endif
