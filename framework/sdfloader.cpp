@@ -24,14 +24,13 @@ Scene SDFloader::load(std::string const& filename) {
 	glm::vec3 out_dir;
 	glm::vec3 out_up;
 
-	std::vector<Light> lights_;
-  if (!file) 
-  {
+  std::vector<Light> lights_;
+  if (!file) {
     std::cout << "file not open \n";
   }
+
   std::string curr_line;
-  while(std::getline(file, curr_line)) 
-  {
+  while (std::getline(file, curr_line)) {
     std::cout << curr_line << "\n";
     std::stringstream test(curr_line);
 		std::string curr_word;
