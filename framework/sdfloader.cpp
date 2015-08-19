@@ -13,13 +13,16 @@ Scene SDFloader::load(std::string const& filename) {
 			 
 	std::string out_rendcam_name;
 	std::string out_file_name;
-	int out_x_res;//USED DOUBLE INSTEAD OF INT AS RESOLUTION
+	int out_x_res;//USED INT AS RESOLUTION
 	int out_y_res;
 	bool read_renderer = false; //Test for correct declaration
 	
 	std::string out_camera_name;
 	double out_fov_x;
 	bool read_camera = false;	//Test for correct declaration
+	glm::vec3 out_eye_pos;
+	glm::vec3 out_dir;
+	glm::vec3 out_up;
 
 	std::vector<Light> lights_;
   if (!file) 
@@ -42,7 +45,7 @@ Scene SDFloader::load(std::string const& filename) {
 			
 				if (curr_word =="material")
 				{
-					std::cout << " MATERIAL "; //TEST
+					std::cout << " MATERIAL " << std::endl; //TEST
 					test >> curr_word;
 					std::string material_name = curr_word;
 					float ka_f;
@@ -77,7 +80,7 @@ Scene SDFloader::load(std::string const& filename) {
 				{
 						test >> curr_word;
 					if (curr_word =="sphere"){
-						std::cout << " SPHERE "; //TESTZEILE
+						std::cout << " SPHERE " << std::endl; //TESTZEILE
 						test >> curr_word;
 						std::string sphere_name = curr_word;
 						double center_x;
@@ -103,7 +106,7 @@ Scene SDFloader::load(std::string const& filename) {
 					}
 					
 					if (curr_word =="box"){
-						std::cout << " BOX "; //TESTZEILE
+						std::cout << " BOX " << std::endl; //TESTZEILE
 						test >> curr_word;
 						std::string box_name = curr_word;
 						double min_x;
@@ -130,7 +133,8 @@ Scene SDFloader::load(std::string const& filename) {
 						auto shared_box = std::make_shared<Box>(Box
 							{it->second, box_name, glm::vec3{min_x, min_y, min_z}, 
 																		 glm::vec3{max_x, max_y, max_z}});
-						shapes_.push_back(shared_box); //push Pointer statt Box										
+						shapes_.push_back(shared_box); //push Pointer statt Box	
+						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
 					}
 				}	
 				if(curr_word== "light"){
@@ -163,18 +167,26 @@ Scene SDFloader::load(std::string const& filename) {
 				}
 			
 				if(curr_word== "camera"){ 
-					std::cout << " CAMERA "; //TESTZEILE
+					std::cout << " CAMERA " << std::endl; //TESTZEILE
 					test >> curr_word;
 					out_camera_name = curr_word;
-					out_fov_x; 
-					test >> out_fov_x;
+					test >> out_fov_x;					
+					test >> out_eye_pos.x;
+					test >> out_eye_pos.y;
+					test >> out_eye_pos.z;
+					test >> out_dir.x;
+					test >> out_dir.y;
+					test >> out_dir.z;
+					test >> out_up.x;
+					test >> out_up.y;
+					test >> out_up.z;
 					read_camera = true;
 					
 				}
 			}
 			if(curr_word== "render"){
 
-				std::cout << " RENDERER "; //TESTZEILE
+				std::cout << " RENDERER " << std::endl; //TESTZEILE
 				test >> curr_word;
 				out_rendcam_name = curr_word;
 				test >> out_file_name;
@@ -189,11 +201,17 @@ Scene SDFloader::load(std::string const& filename) {
   
 	if (read_renderer && read_camera== true){
 		Renderer renderer_scene(out_x_res, out_y_res, out_file_name);
-		Camera camera_scene(out_camera_name, out_fov_x);
-		Scene read_scene{materials_, shapes_, lights_, renderer_scene, camera_scene};
+    renderer_ = renderer_scene;      //Transfer to Member-Variable
+		Camera camera_scene(
+      out_camera_name, 
+      out_fov_x, 
+      out_eye_pos, 
+      out_dir, 
+      out_up);
+		Scene read_scene{materials_, shapes_, lights_, camera_scene};
 		return read_scene;	
 	}
-	Scene default_read{materials_, shapes_, lights_, Renderer(1,1,"Default"), 
-										Camera("Default", 4.0)};
+	Scene default_read{materials_, shapes_, lights_, 
+	Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
 	return default_read;
 }

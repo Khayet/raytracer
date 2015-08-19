@@ -8,13 +8,26 @@
 // -----------------------------------------------------------------------------
 
 #include "renderer.hpp"
-
+Renderer::Renderer()
+  : width_(0)
+  , height_(0)
+  , colorbuffer_(0, Color(0.0, 0.0, 0.0))
+  , filename_("NULL")
+  , ppm_(0, 0){}
 Renderer::Renderer(unsigned w, unsigned h, std::string const& file)
   : width_(w)
   , height_(h)
   , colorbuffer_(w*h, Color(0.0, 0.0, 0.0))
   , filename_(file)
   , ppm_(width_, height_)
+{}
+Renderer::Renderer(Renderer const& copy_renderer)
+  : width_(copy_renderer.width_)
+  , height_(copy_renderer.height_)
+  , colorbuffer_(copy_renderer.width_*copy_renderer.height_, 
+  Color(0.0, 0.0, 0.0))
+  , filename_(copy_renderer.filename_)
+  , ppm_(copy_renderer.width_, copy_renderer.height_)
 {}
 
 void Renderer::render()
@@ -50,4 +63,65 @@ void Renderer::write(Pixel const& p)
   }
 
   ppm_.write(p);
+}
+void Renderer::render(Scene const& render_scene)
+{
+  for (unsigned y = 0; y < height_; ++y) {
+    for (unsigned x = 0; x < width_; ++x) {
+			Ray pixel_ray = shootRay(x, y, render_scene);
+      float distance = 0.0;
+//      std::cout<<render_scene.shapes_.size()<< std::endl;
+      for(auto iterator:render_scene.shapes_) {
+				bool test = false;
+        test = (*iterator).intersect(pixel_ray, distance);
+        std::cout << x << ", " << y << std::endl;
+        if(true == test && 0 < distance) {
+          std::cout<<"DOES INTERSECT"<< std::endl;
+					Pixel p(x,y);
+          p.color = Color(0.0, 1.0, 0);
+					write(p);
+				}else {
+          std::cout<<"n ";
+          Pixel p(x,y);
+          p.color = Color(0.5, 0.5, 0.5);
+          write(p);
+			  }
+		  }
+    }
+  }
+  ppm_.save(filename_);
+}
+
+Ray Renderer::shootRay(int x, int y, Scene const& render_scene)	{
+	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
+  glm::vec3 position = render_scene.camera_.position();
+  glm::vec3 direction = render_scene.camera_.direction();
+  glm::vec3 up = render_scene.camera_.up();
+  glm::vec3 cam_v = {
+    direction.y * up.z - up.y * direction.z,
+    direction.z * up.x - up.z * direction.x,
+    direction.x * up.y - up.y * direction.x,
+    };
+  up = {
+    cam_v.y * direction.z - direction.y * cam_v.z,
+    cam_v.z * direction.x - direction.z * cam_v.x,
+    cam_v.x * direction.y - direction.y * cam_v.x,
+    };
+	float x_coordinate = width_;
+	float y_coordinate = height_;
+
+	float normalized_i = (x / x_coordinate) - 0.5;
+  float normalized_j = (y / y_coordinate) - 0.5;
+  glm::vec3 image_point = (normalized_i * cam_v) + 
+                          (normalized_j * up) +
+                          position + direction; 
+  glm::vec3 direc_shot = image_point - position;
+	return Ray(position, direc_shot);		
+}
+
+unsigned Renderer::width(){
+  return width_;
+}
+unsigned Renderer::height(){
+  return height_;
 }

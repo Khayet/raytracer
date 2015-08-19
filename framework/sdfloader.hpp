@@ -6,6 +6,7 @@
 #include "material.hpp"
 #include "box.hpp"
 #include "sphere.hpp"
+#include "renderer.hpp"
 #include <fstream>
 #include <map>
 #include <iostream>
@@ -16,9 +17,9 @@ class SDFloader
 {
   public:
     Scene load(std::string const&);
-
+		Renderer renderer_;
   private:
-    
+
 		
 
 };

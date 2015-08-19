@@ -8,13 +8,28 @@
 
 class Camera {
 public:
-	Camera(std::string name, double horFOV) 
-			: name_{name}, horFOV_{horFOV} {
-			}
+  Camera(
+  std::string name, 
+  double horFOV, 
+  glm::vec3 position, 
+  glm::vec3 direction,
+  glm::vec3 up) 
+    : name_{name}, horFOV_{horFOV}, position_{position}, direction_{direction}, up_{up} {}
+	glm::vec3 position() const {
+	  return position_;
+	}
+  glm::vec3 direction() const { 
+    return direction_;
+  }
+  glm::vec3 up() const { 
+    return up_;
+  }
 private:
   std::string name_;
-  //glm::vec3 position_; NOT NEEDED SEE SPECIFICATIONS EXERCISE07
   double horFOV_;
+  glm::vec3 position_; 
+  glm::vec3 direction_;
+  glm::vec3 up_;  
 };
 
 #endif

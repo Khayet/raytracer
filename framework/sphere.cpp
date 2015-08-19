@@ -47,7 +47,7 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
 
 bool Sphere::intersect(Ray const& ray, float& dist) const {
   glm::vec3 dir = glm::normalize(ray.direction);
-
+  std::cout<<"Do you even intersect? SPHERE"<< std::endl;
   return glm::intersectRaySphere(
       ray.origin, dir,
       center(), radius()*radius(),

@@ -137,6 +137,13 @@ TEST_CASE("SDFloader", "[load]") {
   Scene loaded(test.load(filepath));
 }
 
+TEST_CASE("Renderer", "[render]") {
+  SDFloader loader;
+  std::string filepath = "../framework/res/render_scene.sdf";
+  Scene loaded(loader.load(filepath));
+  loader.renderer_.render(loaded); //SDFLoader has renderer_ member
+}
+
 int main(int argc, char *argv[])
 {
   return Catch::Session().run(argc, argv);

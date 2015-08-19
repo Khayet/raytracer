@@ -103,6 +103,6 @@ bool Box::intersect(Ray const& r, float& dist) const {
                         + dir.y*(tmin-r.origin.y)*dir.y*(tmin-r.origin.y)
                         + dir.z*(tmin-r.origin.z)*dir.z*(tmin-r.origin.z) ); 
 
-
+  std::cout<<"Do you even intersect? BOX"<< std::endl;
   return true;
 }

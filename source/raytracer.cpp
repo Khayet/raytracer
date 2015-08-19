@@ -1,16 +1,19 @@
 #include <thread>
 #include <renderer.hpp>
 #include <fensterchen.hpp>
+#include "sdfloader.hpp"
 
 int main(int argc, char* argv[])
 {
-  unsigned const width = 600;
-  unsigned const height = 600;
-  std::string const filename = "./checkerboard.ppm";
-
-  Renderer app(width, height, filename);
-
-  std::thread thr([&app]() { app.render(); });
+  std::string const filename = "./ppm_tes.ppm";
+  SDFloader loader;
+  std::string filepath = "../framework/res/render_scene_test.sdf";
+  Scene loaded{loader.load(filepath)};
+  Renderer app(loader.renderer_);
+  unsigned const width = loader.renderer_.width();
+  unsigned const height = loader.renderer_.height();
+  
+  std::thread thr([&]() { app.render(loaded); });
 
   Window win(glm::ivec2(width,height));
 
@@ -26,6 +29,7 @@ int main(int argc, char* argv[])
   }
 
   thr.join();
+  
 
   return 0;
 }
