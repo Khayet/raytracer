@@ -30,8 +30,9 @@ Renderer::Renderer(Renderer const& copy_renderer)
   , ppm_(copy_renderer.width_, copy_renderer.height_)
 {}
 
-void Renderer::render()
-{
+
+
+void Renderer::render() {
   const std::size_t checkersize = 20;
 
   for (unsigned y = 0; y < height_; ++y) {
@@ -49,8 +50,36 @@ void Renderer::render()
   ppm_.save(filename_);
 }
 
-void Renderer::write(Pixel const& p)
-{
+void Renderer::render(Scene const& scene) {
+  for (unsigned y = 0; y < height_; ++y) {
+    for (unsigned x = 0; x < width_; ++x) {
+      Ray ray = shootRay(x, y, scene);
+      float distance = 0.0;
+//      std::cout<<scene.shapes_.size()<< std::endl;
+
+      for (auto it : scene.shapes_) {
+        bool test = false;
+        test = it->intersect(ray, distance);
+        //std::cout << x << ", " << y << std::endl;
+
+        if (test && distance > 0) {
+          //std::cout << "DOES INTERSECT" << std::endl;
+          Pixel p(x,y);
+          p.color = Color(0.0, 1.0, 0);
+          write(p);
+        } else {
+          //std::cout << "n ";
+          Pixel p(x,y);
+          p.color = Color(0.5, 0.5, 0.5);
+          write(p);
+        }
+      }
+    }
+  }
+  ppm_.save(filename_);
+}
+
+void Renderer::write(Pixel const& p) {
   // flip pixels, because of opengl glDrawPixels
   size_t buf_pos = (width_*p.y + p.x);
   if (buf_pos >= colorbuffer_.size() || (int)buf_pos < 0) {
@@ -64,39 +93,12 @@ void Renderer::write(Pixel const& p)
 
   ppm_.write(p);
 }
-void Renderer::render(Scene const& render_scene)
-{
-  for (unsigned y = 0; y < height_; ++y) {
-    for (unsigned x = 0; x < width_; ++x) {
-			Ray pixel_ray = shootRay(x, y, render_scene);
-      float distance = 0.0;
-//      std::cout<<render_scene.shapes_.size()<< std::endl;
-      for(auto iterator:render_scene.shapes_) {
-				bool test = false;
-        test = (*iterator).intersect(pixel_ray, distance);
-        std::cout << x << ", " << y << std::endl;
-        if(true == test && 0 < distance) {
-          std::cout<<"DOES INTERSECT"<< std::endl;
-					Pixel p(x,y);
-          p.color = Color(0.0, 1.0, 0);
-					write(p);
-				}else {
-          std::cout<<"n ";
-          Pixel p(x,y);
-          p.color = Color(0.5, 0.5, 0.5);
-          write(p);
-			  }
-		  }
-    }
-  }
-  ppm_.save(filename_);
-}
 
-Ray Renderer::shootRay(int x, int y, Scene const& render_scene)	{
-	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
-  glm::vec3 position = render_scene.camera_.position();
-  glm::vec3 direction = render_scene.camera_.direction();
-  glm::vec3 up = render_scene.camera_.up();
+Ray Renderer::shootRay(int x, int y, Scene const& scene) {
+  Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
+  glm::vec3 position = scene.camera_.position();
+  glm::vec3 direction = scene.camera_.direction();
+  glm::vec3 up = scene.camera_.up();
   glm::vec3 cam_v = {
     direction.y * up.z - up.y * direction.z,
     direction.z * up.x - up.z * direction.x,
@@ -107,16 +109,16 @@ Ray Renderer::shootRay(int x, int y, Scene const& render_scene)	{
     cam_v.z * direction.x - direction.z * cam_v.x,
     cam_v.x * direction.y - direction.y * cam_v.x,
     };
-	float x_coordinate = width_;
-	float y_coordinate = height_;
+  float x_coordinate = width_;
+  float y_coordinate = height_;
 
-	float normalized_i = (x / x_coordinate) - 0.5;
+  float normalized_i = (x / x_coordinate) - 0.5;
   float normalized_j = (y / y_coordinate) - 0.5;
   glm::vec3 image_point = (normalized_i * cam_v) + 
                           (normalized_j * up) +
                           position + direction; 
   glm::vec3 direc_shot = image_point - position;
-	return Ray(position, direc_shot);		
+  return Ray(position, direc_shot);   
 }
 
 unsigned Renderer::width(){

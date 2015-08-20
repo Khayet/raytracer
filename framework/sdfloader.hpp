@@ -17,11 +17,7 @@ class SDFloader
 {
   public:
     Scene load(std::string const&);
-		Renderer renderer_;
   private:
-
-		
-
 };
 
 #endif

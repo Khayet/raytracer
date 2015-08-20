@@ -32,10 +32,10 @@ public:
   {
     return colorbuffer_;
   }
-	unsigned width();
-	unsigned height();
-	
-	
+  unsigned width();
+  unsigned height();
+  
+  
 private:
   unsigned width_;
   unsigned height_;
