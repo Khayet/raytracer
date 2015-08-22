@@ -13,8 +13,8 @@ Scene SDFloader::load(std::string const& filename) {
 			 
 	std::string out_rendcam_name;
 	std::string out_file_name;
-	int out_x_res;//USED INT AS RESOLUTION
-	int out_y_res;
+	unsigned out_x_res;//USED INT AS RESOLUTION
+	unsigned out_y_res;
 
 	std::string out_camera_name;
 	double out_fov_x;

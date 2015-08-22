@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
   Scene loaded{loader.load(filepath)};
   unsigned const width = 600;
   unsigned const height = 600;
-  Renderer app(width, height, filepath);
+  Renderer app(width, height, filename);
   
   std::thread thr([&]() { app.render(loaded); });
 

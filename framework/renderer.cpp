@@ -63,12 +63,12 @@ void Renderer::render(Scene const& scene) {
         //std::cout << x << ", " << y << std::endl;
 
         if (test && distance > 0) {
-          //std::cout << "DOES INTERSECT" << std::endl;
+          std::cout << "DOES INTERSECT" << std::endl;
           Pixel p(x,y);
           p.color = Color(0.0, 1.0, 0);
           write(p);
         } else {
-          //std::cout << "n ";
+          std::cout << "n ";
           Pixel p(x,y);
           p.color = Color(0.5, 0.5, 0.5);
           write(p);
