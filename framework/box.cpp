@@ -106,3 +106,26 @@ bool Box::intersect(Ray const& r, float& dist) const {
   std::cout<<"Do you even intersect? BOX"<< std::endl;
   return true;
 }
+
+glm::vec3 Box::intersect_normal(glm::vec3 const& intersection) const{
+  glm::vec3 center = {((min_.x + max_.x)/2),((min_.y + max_.y)/2),((min_.z + max_.z)/2)};
+  glm::vec3 normal = {0, 0, 0};
+  float min_distance = std::numeric_limits<float>::max();
+  glm::vec3 temp = temp - center;
+  float distance = std::abs(max_.x - std::abs(temp.x));
+  if (distance < min_distance) {
+		min_distance = distance;
+		normal = {(1 * (temp.x/(std::abs(temp.x)))), 0, 0 };
+  }
+  distance = std::abs(max_.y - std::abs(temp.y));
+  if (distance < min_distance) {
+		min_distance = distance;
+	  normal = {0, (1 * (temp.y/(std::abs(temp.y)))), 0 };
+	}
+  distance = std::abs(max_.z - std::abs(temp.z));
+  if (distance < min_distance) {
+		min_distance = distance;
+    normal = {0, 0, (1 * (temp.z/(std::abs(temp.z))))};		
+  }
+  return normal;
+}

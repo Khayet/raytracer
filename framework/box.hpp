@@ -16,7 +16,7 @@ public:
 
   glm::vec3 min() const { return min_; }
   glm::vec3 max() const { return max_; }
-
+ 
   /* virtual */ double area() const /* override */;
   /* virtual */ double volume() const /* override */;
 
@@ -24,7 +24,8 @@ public:
 
   bool intersect(Ray const&) const;
   bool intersect(Ray const&, float& dist) const;
-
+  glm::vec3 intersect_normal(glm::vec3 const& intersection) const;
+  
 private:
   glm::vec3 min_;
   glm::vec3 max_;

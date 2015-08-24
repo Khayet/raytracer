@@ -7,6 +7,7 @@
 // Renderer
 // -----------------------------------------------------------------------------
 
+#include <cmath>
 #include "renderer.hpp"
 Renderer::Renderer()
   : width_(0)
@@ -64,39 +65,103 @@ void Renderer::write(Pixel const& p)
 
   ppm_.write(p);
 }
-void Renderer::render(Scene const& render_scene)
+void Renderer::render(Scene const& scene)
 {
+  int ray_depth = 3;                      //Tiefe der Strahlen
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
-			Ray pixel_ray = shootRay(x, y, render_scene);
       float distance = 0.0;
-//      std::cout<<render_scene.shapes_.size()<< std::endl;
-      for(auto iterator:render_scene.shapes_) {
+      float min_distance = std::numeric_limits<float>::max();
+			Ray pixel_ray = shootRay(x, y, scene);
+//      std::cout<<scene.shapes_.size()<< std::endl;
+      for(auto iterator:scene.shapes_) {
+
 				bool test = false;
+        bool pixel_drawn = false;
         test = (*iterator).intersect(pixel_ray, distance);
         std::cout << x << ", " << y << std::endl;
-        if(true == test && 0 < distance) {
+        if (true == test && 0 < distance && min_distance > distance) {          
+          pixel_drawn = true;
+          min_distance = distance;
+          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction,  (*iterator).material().color_ka(), 
+          distance, ray_depth);
           std::cout<<"DOES INTERSECT"<< std::endl;
 					Pixel p(x,y);
-          p.color = Color(0.0, 1.0, 0);
+          p.color = shade(iterator, scene, (*iterator).material(), intersec_struct);
 					write(p);
 				}else {
+          if (pixel_drawn = false){
           std::cout<<"n ";
           Pixel p(x,y);
           p.color = Color(0.5, 0.5, 0.5);
           write(p);
+         }
 			  }
 		  }
     }
   }
   ppm_.save(filename_);
 }
+Color Renderer::shade(
+  std::shared_ptr<Shape> const& shape_ptr, 
+  Scene const& scene, 
+  Material const& material, 
+  Raystructure const& raystructure) {
+    
+  Color shade_color = {0.0,0.0,0.0};
+  shade_color = material.color_kd();
+  if(scene.lights_.empty()){
+    return shade_color;
+  }else{
+      float ambient_r = 0;
+      float ambient_g = 0;
+      float ambient_b = 0;
+    for ( int i = 0; i < scene.lights_.size(); ++i) {      
+      ambient_r = scene.lights_[i].intensity_amb_.r + ambient_r;
+      ambient_g = scene.lights_[i].intensity_amb_.g + ambient_g;
+      ambient_b = scene.lights_[i].intensity_amb_.b + ambient_b;  
+   
+      glm::vec3 light_orig = { // Beachtet Berechnungsfehler, falls Schnittstelle  in der Form ist
+        (raystructure.intersection_.x + 
+          (scene.lights_[i].position_- raystructure.intersection_).x*0.001),
+        (raystructure.intersection_.y + 
+          (scene.lights_[i].position_- raystructure.intersection_).y*0.001),
+        (raystructure.intersection_.z + 
+          (scene.lights_[i].position_- raystructure.intersection_).z*0.001)};
+      Ray light_ray = {light_orig,(glm::normalize(scene.lights_[i].position_- raystructure.intersection_))}; 
+      glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
+      float incident_light = scene.lights_[i].intensity_dif_.r  ;//HIERWEITERARBEITEN
+      float diffuse_r = scene.lights_[i].intensity_dif_.r * material.color_kd().r;
+      float diffuse_g = scene.lights_[i].intensity_dif_.g * material.color_kd().g;
+      float diffuse_b = scene.lights_[i].intensity_dif_.b * material.color_kd().b;
+     
+      Color diffuse = material.color_kd();
+      Color specular = material.color_ks();
 
-Ray Renderer::shootRay(int x, int y, Scene const& render_scene)	{
+    }
+    ambient_r = material.color_ka().r * ambient_r;
+    ambient_b = material.color_ka().b * ambient_g;
+    ambient_g = material.color_ka().g * ambient_b;
+    Color ambient = {ambient_r, ambient_g, ambient_b};  
+    shade_color = material.color_ka();
+    return shade_color;
+  }
+}
+
+Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
 	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
-  glm::vec3 position = render_scene.camera_.position();
-  glm::vec3 direction = render_scene.camera_.direction();
-  glm::vec3 up = render_scene.camera_.up();
+/*  double aspect_ratio = x/y;
+  double p_width = 0.1;
+  double screen_x = p_width * x;
+  double screen_y = screen_x * aspect_ratio;
+  
+  tan(scene.camera_.camera.horFOV()/2);
+  
+  aspect_ratio * 
+*/
+  glm::vec3 position = scene.camera_.position();
+  glm::vec3 direction = scene.camera_.direction();
+  glm::vec3 up = scene.camera_.up();
   glm::vec3 cam_v = {
     direction.y * up.z - up.y * direction.z,
     direction.z * up.x - up.z * direction.x,

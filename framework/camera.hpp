@@ -15,6 +15,12 @@ public:
   glm::vec3 direction,
   glm::vec3 up) 
     : name_{name}, horFOV_{horFOV}, position_{position}, direction_{direction}, up_{up} {}
+  std::string name() const {
+		return name_;
+  }  
+  double horFOV() const { 
+    return horFOV_;
+  }
 	glm::vec3 position() const {
 	  return position_;
 	}

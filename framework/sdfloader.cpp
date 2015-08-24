@@ -211,6 +211,6 @@ Scene SDFloader::load(std::string const& filename) {
 		return read_scene;	
 	}
 	Scene default_read{materials_, shapes_, lights_, 
-	Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
+	Camera("Default", 45.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
 	return default_read;
 }

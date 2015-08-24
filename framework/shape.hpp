@@ -28,7 +28,7 @@ public:
 	
   virtual std::ostream& print(std::ostream&) const;
 	virtual bool intersect(Ray const& ray, float& t) const = 0;
-	
+	virtual glm::vec3 intersect_normal(glm::vec3 const& intersection) const = 0;
 private:
   Material material_;
   std::string name_;
