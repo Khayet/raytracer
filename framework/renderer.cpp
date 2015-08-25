@@ -139,11 +139,12 @@ Color Renderer::shade (
         (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
 
       glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
-      float incident_light = scene.lights_[i].intensity_dif_.r  ;//HIERWEITERARBEITEN
+      //float incident_light = scene.lights_[i].intensity_dif_.r  ;//HIERWEITERARBEITEN
+      float dotProd = glm::dot((light_ray.direction + light_ray.origin), normal);
 
-      diffuse.r += scene.lights_[i].intensity_dif_.r;
-      diffuse.g += scene.lights_[i].intensity_dif_.g;
-      diffuse.b += scene.lights_[i].intensity_dif_.b;
+      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd;
+      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd;
+      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd;
 
       /*   
       float diffuse_r = scene.lights_[i].intensity_dif_.r * material.color_kd().r;
@@ -160,7 +161,8 @@ Color Renderer::shade (
     ambient.b = material.color_ka().b * ambient.b;
     
     ambient = {ambient.r, ambient.g, ambient.b};  
-    diffuse *= material.color_kd();
+    //only apply coefficient once, since it's the same material:
+    diffuse *= material.color_kd(); 
     shade_color = diffuse + specular + ambient;
     //shade_color = material.color_ka();
     return shade_color;

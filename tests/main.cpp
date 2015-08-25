@@ -139,7 +139,7 @@ TEST_CASE("SDFloader", "[load]") {
 
 TEST_CASE("Renderer", "[render]") {
   SDFloader loader;
-  std::string filepath = "../framework/res/render_scene_test_noLights.sdf";
+  std::string filepath = "../framework/res/test_scene_2.sdf";
   Scene loaded(loader.load(filepath));
 }
 
