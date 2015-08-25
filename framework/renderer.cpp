@@ -146,17 +146,33 @@ Color Renderer::shade (
 
       glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
 
-      float dotProd = glm::dot(light_ray.direction, normal);
+      float dotProd_dif = glm::dot(light_ray.direction, normal);
 
-      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd;
-      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd;
-      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd;
+      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif;
+      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif;
+      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif;
+      
+            /**
+        SPECULAR LIGHTING
+        diffuse_intensity = 
+            (dot product of surface normal and incident vector) 
+          * (brightness of light source)
+          * (diffuse coefficient of material)
+      */
+      //specular
+      glm::vec3 reflection = shape_ptr->intersect_normal(raystructure.intersection_) + light_ray.direction;     
+      glm::normalize(reflection);
+      glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
+      float dotProd_spec = glm::dot(reflection, eyeray_direction);
+      specular.r += material.color_ks().r * pow(dotProd_spec, material.m());
+      specular.g += material.color_ks().g * pow(dotProd_spec, material.m());
+      specular.b += material.color_ks().b * pow(dotProd_spec, material.m());
     }
 
     ambient.r = material.color_ka().r * ambient.r;
     ambient.g = material.color_ka().g * ambient.g;
     ambient.b = material.color_ka().b * ambient.b;
-    
+        
     ambient = {ambient.r, ambient.g, ambient.b};  
     std::cout << ambient.r << ", " << ambient.g << ", " << ambient.b << "\n";
     //only apply coefficient once, since it's the same material:

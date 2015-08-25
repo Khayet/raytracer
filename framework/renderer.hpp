@@ -19,6 +19,7 @@
 #include "scene.hpp"
 #include "sphere.hpp"
 #include <limits>
+#include <math.h>
 #include <string>
 #include <glm/glm.hpp>
 
