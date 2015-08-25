@@ -131,11 +131,13 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
   REQUIRE(box1.intersect(ray1));
 } 
 
+/*
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
   std::string filepath = "../framework/res/render_scene.sdf";
   Scene loaded(test.load(filepath));
 }
+*/
 
 TEST_CASE("Renderer", "[render]") {
   SDFloader loader;
