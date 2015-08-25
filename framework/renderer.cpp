@@ -117,11 +117,23 @@ Color Renderer::shade (
     Color ambient = {0.0,0.0,0.0};
 
     for (int i = 0; i < scene.lights_.size(); ++i) {      
+
+      //sum up ambient light:
       ambient.r += scene.lights_[i].intensity_amb_.r;
       ambient.g += scene.lights_[i].intensity_amb_.g;
       ambient.b += scene.lights_[i].intensity_amb_.b;  
    
-      glm::vec3 light_orig = { // Beachtet Berechnungsfehler, falls Schnittstelle  in der Form ist
+      /**
+        DIFFUSE LIGHTING
+        modeled after Lambert's law
+        diffuse_intensity = 
+            (dot product of surface normal and incident vector) 
+          * (brightness of light source)
+          * (diffuse coefficient of material)
+      */
+
+      //respects calculation error, if intersection lies within Shape
+      glm::vec3 light_orig = { 
         (raystructure.intersection_.x + 
           (scene.lights_[i].position_ - raystructure.intersection_).x*0.001),
         (raystructure.intersection_.y + 
@@ -134,7 +146,6 @@ Color Renderer::shade (
 
       glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
 
-      //float incident_light = scene.lights_[i].intensity_dif_.r  ;//HIERWEITERARBEITEN
       float dotProd = glm::dot(light_ray.direction, normal);
 
       diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd;
