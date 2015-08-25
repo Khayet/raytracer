@@ -9,12 +9,14 @@
 class Camera {
 public:
   Camera(
-  std::string name, 
-  double horFOV, 
-  glm::vec3 position, 
-  glm::vec3 direction,
-  glm::vec3 up) 
-    : name_{name}, horFOV_{horFOV}, position_{position}, direction_{direction}, up_{up} {}
+    std::string name, 
+    double horFOV, 
+    glm::vec3 position, 
+    glm::vec3 direction,
+    glm::vec3 up) : 
+      name_{name}, horFOV_{horFOV}, position_{position}, 
+      direction_{direction}, up_{up} {}
+    
   std::string name() const {
 		return name_;
   }  

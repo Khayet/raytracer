@@ -13,10 +13,9 @@ Scene SDFloader::load(std::string const& filename) {
 			 
 	std::string out_rendcam_name;
 	std::string out_file_name;
-	int out_x_res;//USED INT AS RESOLUTION
-	int out_y_res;
-	bool read_renderer = false; //Test for correct declaration
-	
+	unsigned out_x_res;//USED INT AS RESOLUTION
+	unsigned out_y_res;
+
 	std::string out_camera_name;
 	double out_fov_x;
 	bool read_camera = false;	//Test for correct declaration
@@ -165,7 +164,7 @@ Scene SDFloader::load(std::string const& filename) {
 					lights_.push_back(temp_light);
 				}
 			
-				if(curr_word== "camera"){ 
+					if(curr_word == "camera"){ 
 					std::cout << " CAMERA " << std::endl; //TESTZEILE
 					test >> curr_word;
 					out_camera_name = curr_word;
@@ -180,27 +179,34 @@ Scene SDFloader::load(std::string const& filename) {
 					test >> out_up.y;
 					test >> out_up.z;
 					read_camera = true;
-					
 				}
 			}
-			if(curr_word== "render"){
 
-				std::cout << " RENDERER " << std::endl; //TESTZEILE
+			if(curr_word == "render") {
+
+				std::cout << " RENDER " << std::endl; //TESTZEILE
 				test >> curr_word;
 				out_rendcam_name = curr_word;
 				test >> out_file_name;
 				test >> out_x_res;
 				test >> out_y_res;
-				read_renderer = true;
+
+				Camera cam(
+		      out_camera_name, 
+		      out_fov_x, 
+		      out_eye_pos, 
+		      out_dir, 
+		      out_up);
+				
+				Renderer rend{out_x_res, out_y_res, out_file_name};
+				rend.render(Scene(materials_, shapes_, lights_, cam));
 			}
 			if(curr_word== "#"){
 			}						
 		}		
   }
   
-	if (read_renderer && read_camera== true){
-		Renderer renderer_scene(out_x_res, out_y_res, out_file_name);
-    renderer_ = renderer_scene;      //Transfer to Member-Variable
+	if (read_camera) {
 		Camera camera_scene(
       out_camera_name, 
       out_fov_x, 
@@ -210,7 +216,8 @@ Scene SDFloader::load(std::string const& filename) {
 		Scene read_scene{materials_, shapes_, lights_, camera_scene};
 		return read_scene;	
 	}
+
 	Scene default_read{materials_, shapes_, lights_, 
-	Camera("Default", 45.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
+	Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
 	return default_read;
 }

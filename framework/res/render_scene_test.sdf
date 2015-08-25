@@ -13,4 +13,3 @@ define light sun 1000 700 0 .2 .2 .2 .8 .8 .8
 # camera 
 define camera eye 45.0 0 0 0 0 0 -1 0 1 0
 # ... and go
-render eye test.ppm 300 300

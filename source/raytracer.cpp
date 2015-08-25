@@ -9,9 +9,9 @@ int main(int argc, char* argv[])
   SDFloader loader;
   std::string filepath = "../framework/res/render_scene_test.sdf";
   Scene loaded{loader.load(filepath)};
-  Renderer app(loader.renderer_);
-  unsigned const width = loader.renderer_.width();
-  unsigned const height = loader.renderer_.height();
+  unsigned const width = 300;
+  unsigned const height = 300;
+  Renderer app(width, height, filename);
   
   std::thread thr([&]() { app.render(loaded); });
 

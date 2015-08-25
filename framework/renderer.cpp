@@ -31,8 +31,7 @@ Renderer::Renderer(Renderer const& copy_renderer)
   , ppm_(copy_renderer.width_, copy_renderer.height_)
 {}
 
-void Renderer::render()
-{
+void Renderer::render() {
   const std::size_t checkersize = 20;
 
   for (unsigned y = 0; y < height_; ++y) {
@@ -50,8 +49,44 @@ void Renderer::render()
   ppm_.save(filename_);
 }
 
-void Renderer::write(Pixel const& p)
-{
+void Renderer::render(Scene const& scene) {
+  int ray_depth = 3;                      //Tiefe der Strahlen
+  for (unsigned y = 0; y < height_; ++y) {
+    for (unsigned x = 0; x < width_; ++x) {
+      float distance = 0.0;
+      float min_distance = std::numeric_limits<float>::max();
+			Ray pixel_ray = shootRay(x, y, scene);
+      
+      for(auto it:scene.shapes_) {
+				bool test = false;
+        bool pixel_drawn = false;
+        test = it->intersect(pixel_ray, distance);
+        std::cout << x << ", " << y << std::endl;
+        
+        if (true == test && 0 < distance && min_distance > distance) {          
+          pixel_drawn = true;
+          min_distance = distance;
+          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction,  (*it).material().color_ka(), 
+          distance, ray_depth);
+          std::cout<<"DOES INTERSECT"<< std::endl;
+					Pixel p(x,y);
+          p.color = shade(it, scene, (*it).material(), intersec_struct);
+					write(p);
+				} else {
+          if (pixel_drawn = false){
+          std::cout<<"n ";
+          Pixel p(x,y);
+          p.color = Color(0.5, 0.5, 0.5);
+          write(p);
+         }
+			  }
+		  }
+    }
+  }
+  ppm_.save(filename_);
+}
+
+void Renderer::write(Pixel const& p) {
   // flip pixels, because of opengl glDrawPixels
   size_t buf_pos = (width_*p.y + p.x);
   if (buf_pos >= colorbuffer_.size() || (int)buf_pos < 0) {
@@ -65,43 +100,7 @@ void Renderer::write(Pixel const& p)
 
   ppm_.write(p);
 }
-void Renderer::render(Scene const& scene)
-{
-  int ray_depth = 3;                      //Tiefe der Strahlen
-  for (unsigned y = 0; y < height_; ++y) {
-    for (unsigned x = 0; x < width_; ++x) {
-      float distance = 0.0;
-      float min_distance = std::numeric_limits<float>::max();
-			Ray pixel_ray = shootRay(x, y, scene);
-//      std::cout<<scene.shapes_.size()<< std::endl;
-      for(auto iterator:scene.shapes_) {
 
-				bool test = false;
-        bool pixel_drawn = false;
-        test = (*iterator).intersect(pixel_ray, distance);
-        std::cout << x << ", " << y << std::endl;
-        if (true == test && 0 < distance && min_distance > distance) {          
-          pixel_drawn = true;
-          min_distance = distance;
-          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction,  (*iterator).material().color_ka(), 
-          distance, ray_depth);
-          std::cout<<"DOES INTERSECT"<< std::endl;
-					Pixel p(x,y);
-          p.color = shade(iterator, scene, (*iterator).material(), intersec_struct);
-					write(p);
-				}else {
-          if (pixel_drawn = false){
-          std::cout<<"n ";
-          Pixel p(x,y);
-          p.color = Color(0.5, 0.5, 0.5);
-          write(p);
-         }
-			  }
-		  }
-    }
-  }
-  ppm_.save(filename_);
-}
 Color Renderer::shade(
   std::shared_ptr<Shape> const& shape_ptr, 
   Scene const& scene, 
