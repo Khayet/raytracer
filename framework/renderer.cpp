@@ -155,11 +155,10 @@ Color Renderer::shade (
             /**
         SPECULAR LIGHTING
         diffuse_intensity = 
-            (dot product of surface normal and incident vector) 
-          * (brightness of light source)
-          * (diffuse coefficient of material)
+            (dot product of normalized reflection and light vector) 
+          * (specular coefficient of material)
       */
-      //specular
+      //specular  
       glm::vec3 reflection = shape_ptr->intersect_normal(raystructure.intersection_) + light_ray.direction;     
       glm::normalize(reflection);
       glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
