@@ -57,23 +57,23 @@ void Renderer::render(Scene const& scene) {
       float min_distance = std::numeric_limits<float>::max();
 			Ray pixel_ray = shootRay(x, y, scene);
       
-      for(auto it:scene.shapes_) {
+      for(auto it : scene.shapes_) {
 				bool test = false;
         bool pixel_drawn = false;
         test = it->intersect(pixel_ray, distance);
         std::cout << x << ", " << y << std::endl;
         
-        if (true == test && 0 < distance && min_distance > distance) {          
+        if (test && distance > 0 && min_distance > distance) {          
           pixel_drawn = true;
           min_distance = distance;
-          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction,  (*it).material().color_ka(), 
-          distance, ray_depth);
+          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction, 
+            (*it).material().color_ka(), distance, ray_depth);
           std::cout<<"DOES INTERSECT"<< std::endl;
 					Pixel p(x,y);
           p.color = shade(it, scene, (*it).material(), intersec_struct);
 					write(p);
 				} else {
-          if (pixel_drawn = false){
+          if (pixel_drawn = false) {
           std::cout<<"n ";
           Pixel p(x,y);
           p.color = Color(0.5, 0.5, 0.5);
@@ -101,7 +101,7 @@ void Renderer::write(Pixel const& p) {
   ppm_.write(p);
 }
 
-Color Renderer::shade(
+Color Renderer::shade (
   std::shared_ptr<Shape> const& shape_ptr, 
   Scene const& scene, 
   Material const& material, 
@@ -109,40 +109,60 @@ Color Renderer::shade(
     
   Color shade_color = {0.0,0.0,0.0};
   shade_color = material.color_kd();
-  if(scene.lights_.empty()){
+  if (scene.lights_.empty()) {
     return shade_color;
-  }else{
-      float ambient_r = 0;
-      float ambient_g = 0;
-      float ambient_b = 0;
-    for ( int i = 0; i < scene.lights_.size(); ++i) {      
-      ambient_r = scene.lights_[i].intensity_amb_.r + ambient_r;
-      ambient_g = scene.lights_[i].intensity_amb_.g + ambient_g;
-      ambient_b = scene.lights_[i].intensity_amb_.b + ambient_b;  
+  } else {
+    Color diffuse = {0.0,0.0,0.0};
+    Color specular = {0.0,0.0,0.0};
+    Color ambient = {0.0,0.0,0.0};
+
+    /*
+    float ambient.r = 0;
+    float ambient_g = 0;
+    float ambient_b = 0;
+    */    
+
+    for (int i = 0; i < scene.lights_.size(); ++i) {      
+      ambient.r += scene.lights_[i].intensity_amb_.r;
+      ambient.g += scene.lights_[i].intensity_amb_.g;
+      ambient.b += scene.lights_[i].intensity_amb_.b;  
    
       glm::vec3 light_orig = { // Beachtet Berechnungsfehler, falls Schnittstelle  in der Form ist
         (raystructure.intersection_.x + 
-          (scene.lights_[i].position_- raystructure.intersection_).x*0.001),
+          (scene.lights_[i].position_ - raystructure.intersection_).x*0.001),
         (raystructure.intersection_.y + 
-          (scene.lights_[i].position_- raystructure.intersection_).y*0.001),
+          (scene.lights_[i].position_ - raystructure.intersection_).y*0.001),
         (raystructure.intersection_.z + 
-          (scene.lights_[i].position_- raystructure.intersection_).z*0.001)};
-      Ray light_ray = {light_orig,(glm::normalize(scene.lights_[i].position_- raystructure.intersection_))}; 
+          (scene.lights_[i].position_ - raystructure.intersection_).z*0.001)};
+
+      Ray light_ray = {light_orig,
+        (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
+
       glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
       float incident_light = scene.lights_[i].intensity_dif_.r  ;//HIERWEITERARBEITEN
+
+      diffuse.r += scene.lights_[i].intensity_dif_.r;
+      diffuse.g += scene.lights_[i].intensity_dif_.g;
+      diffuse.b += scene.lights_[i].intensity_dif_.b;
+
+      /*   
       float diffuse_r = scene.lights_[i].intensity_dif_.r * material.color_kd().r;
       float diffuse_g = scene.lights_[i].intensity_dif_.g * material.color_kd().g;
       float diffuse_b = scene.lights_[i].intensity_dif_.b * material.color_kd().b;
-     
-      Color diffuse = material.color_kd();
-      Color specular = material.color_ks();
+      */
 
+      //Color diffuse = material.color_kd();
+      //Color specular = material.color_ks();
     }
-    ambient_r = material.color_ka().r * ambient_r;
-    ambient_b = material.color_ka().b * ambient_g;
-    ambient_g = material.color_ka().g * ambient_b;
-    Color ambient = {ambient_r, ambient_g, ambient_b};  
-    shade_color = material.color_ka();
+
+    ambient.r = material.color_ka().r * ambient.r;
+    ambient.g = material.color_ka().g * ambient.g;
+    ambient.b = material.color_ka().b * ambient.b;
+    
+    ambient = {ambient.r, ambient.g, ambient.b};  
+    diffuse *= material.color_kd();
+    shade_color = diffuse + specular + ambient;
+    //shade_color = material.color_ka();
     return shade_color;
   }
 }

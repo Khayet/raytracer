@@ -7,18 +7,17 @@
 
 class Material{
 	public:
-		Material(Color ka,Color  kd, Color  ks);
-		Material(Color ka,Color  kd, Color  ks, float m);
+		Material(Color ka, Color kd, Color ks);
+		Material(Color ka, Color kd, Color ks, float m);
 		Material();
-		Material(std::string name, Color ka,Color  kd, Color  ks, float m);
+		Material(std::string name, Color ka, Color kd, Color ks, float m);
 
 		/* virtual */ std::ostream& print(std::ostream& os) const;
 		std::string name() const;
-		Color color_ka()const;
-		Color color_kd()const;
-		Color color_ks()const;
+		Color color_ka() const;
+		Color color_kd() const;
+		Color color_ks() const;
 		float m() const;
-	
 
 	private:
 		std::string name_;

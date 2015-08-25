@@ -139,9 +139,8 @@ TEST_CASE("SDFloader", "[load]") {
 
 TEST_CASE("Renderer", "[render]") {
   SDFloader loader;
-  std::string filepath = "../framework/res/render_scene.sdf";
+  std::string filepath = "../framework/res/render_scene_test_noLights.sdf";
   Scene loaded(loader.load(filepath));
-  //loader.renderer_.render(loaded); //SDFLoader has renderer_ member
 }
 
 int main(int argc, char *argv[])
