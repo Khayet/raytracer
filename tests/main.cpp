@@ -131,13 +131,20 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
   REQUIRE(box1.intersect(ray1));
 } 
 
-/*
+TEST_CASE("Sphere", "[intersect_normal]") {
+  Sphere sph{{0.0,0.0,0.0}, 1.0};
+  glm::vec3 intersection{1.0, 0.0, 0.0};
+  glm::vec3 normal = sph.intersect_normal(intersection);
+  REQUIRE(normal.x == 1.0);
+  REQUIRE(normal.y == 0.0);
+  REQUIRE(normal.z == 0.0);
+}
+
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
   std::string filepath = "../framework/res/render_scene.sdf";
   Scene loaded(test.load(filepath));
 }
-*/
 
 TEST_CASE("Renderer", "[render]") {
   SDFloader loader;

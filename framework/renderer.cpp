@@ -56,25 +56,25 @@ void Renderer::render(Scene const& scene) {
       float distance = 0.0;
       float min_distance = std::numeric_limits<float>::max();
 			Ray pixel_ray = shootRay(x, y, scene);
-      
+
       for(auto it : scene.shapes_) {
 				bool test = false;
         bool pixel_drawn = false;
         test = it->intersect(pixel_ray, distance);
-        std::cout << x << ", " << y << std::endl;
+        //std::cout << x << ", " << y << std::endl;
         
         if (test && distance > 0 && min_distance > distance) {          
           pixel_drawn = true;
           min_distance = distance;
           Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction, 
             (*it).material().color_ka(), distance, ray_depth);
-          std::cout<<"DOES INTERSECT"<< std::endl;
+          //std::cout<<"DOES INTERSECT"<< std::endl;
 					Pixel p(x,y);
           p.color = shade(it, scene, (*it).material(), intersec_struct);
 					write(p);
 				} else {
           if (pixel_drawn = false) {
-          std::cout<<"n ";
+          //std::cout<<"n ";
           Pixel p(x,y);
           p.color = Color(0.5, 0.5, 0.5);
           write(p);
@@ -131,7 +131,6 @@ Color Renderer::shade (
           * (brightness of light source)
           * (diffuse coefficient of material)
       */
-
       //respects calculation error, if intersection lies within Shape
       glm::vec3 light_orig = { 
         (raystructure.intersection_.x + 
@@ -151,14 +150,17 @@ Color Renderer::shade (
       diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif;
       diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif;
       diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif;
-      
-            /**
+
+      diffuse.r = std::abs(diffuse.r);
+      diffuse.g = std::abs(diffuse.g);
+      diffuse.b = std::abs(diffuse.b);
+
+      /**
         SPECULAR LIGHTING
         diffuse_intensity = 
-            (dot product of normalized reflection and light vector) 
-          * (specular coefficient of material)
+            (dot product of normalized reflection and spectator vector) 
+          ^ (specular coefficient of material)
       */
-      //specular  
       glm::vec3 reflection = shape_ptr->intersect_normal(raystructure.intersection_) + light_ray.direction;     
       glm::normalize(reflection);
       glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
@@ -166,17 +168,22 @@ Color Renderer::shade (
       specular.r += material.color_ks().r * pow(dotProd_spec, material.m());
       specular.g += material.color_ks().g * pow(dotProd_spec, material.m());
       specular.b += material.color_ks().b * pow(dotProd_spec, material.m());
+
+      specular.r = std::abs(specular.r);
+      specular.g = std::abs(specular.g);
+      specular.b = std::abs(specular.b);
     }
 
-    ambient.r = material.color_ka().r * ambient.r;
-    ambient.g = material.color_ka().g * ambient.g;
-    ambient.b = material.color_ka().b * ambient.b;
-        
-    ambient = {ambient.r, ambient.g, ambient.b};  
-    std::cout << ambient.r << ", " << ambient.g << ", " << ambient.b << "\n";
+    ambient.r = std::abs(material.color_ka().r * ambient.r);
+    ambient.g = std::abs(material.color_ka().g * ambient.g);
+    ambient.b = std::abs(material.color_ka().b * ambient.b);
+
     //only apply coefficient once, since it's the same material:
     diffuse *= material.color_kd(); 
+    std::cout << "diff: " << diffuse << "spec: " << specular << "amb: " << ambient;
     shade_color = diffuse + specular + ambient;
+
+    //std::cout << "(" << shade_color.r << ", " << shade_color.g << ", " << shade_color.b << ")" << "\n";
 
     return shade_color;
   }
