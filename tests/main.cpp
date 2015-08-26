@@ -140,15 +140,17 @@ TEST_CASE("Sphere", "[intersect_normal]") {
   REQUIRE(normal.z == 0.0);
 }
 
+/*
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
   std::string filepath = "../framework/res/render_scene.sdf";
   Scene loaded(test.load(filepath));
 }
+*/
 
 TEST_CASE("Renderer", "[render]") {
   SDFloader loader;
-  std::string filepath = "../framework/res/test_scene_2.sdf";
+  std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded(loader.load(filepath));
 }
 

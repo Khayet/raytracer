@@ -151,9 +151,9 @@ Color Renderer::shade (
       diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif;
       diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif;
 
-      diffuse.r = std::abs(diffuse.r);
-      diffuse.g = std::abs(diffuse.g);
-      diffuse.b = std::abs(diffuse.b);
+      diffuse.r = std::fmax(0.0, std::fmin(1.0, diffuse.r));
+      diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
+      diffuse.b = std::fmax(0.0, std::fmin(1.0, diffuse.b));
 
       /**
         SPECULAR LIGHTING
@@ -165,18 +165,19 @@ Color Renderer::shade (
       glm::normalize(reflection);
       glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
       float dotProd_spec = glm::dot(reflection, eyeray_direction);
+
       specular.r += material.color_ks().r * pow(dotProd_spec, material.m());
       specular.g += material.color_ks().g * pow(dotProd_spec, material.m());
       specular.b += material.color_ks().b * pow(dotProd_spec, material.m());
 
-      specular.r = std::abs(specular.r);
-      specular.g = std::abs(specular.g);
-      specular.b = std::abs(specular.b);
+      specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
+      specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));
+      specular.b = std::fmax(0.0, std::fmin(1.0, specular.b));
     }
-
-    ambient.r = std::abs(material.color_ka().r * ambient.r);
-    ambient.g = std::abs(material.color_ka().g * ambient.g);
-    ambient.b = std::abs(material.color_ka().b * ambient.b);
+    
+    ambient.r = std::fmax(0.0, std::fmin(1.0, material.color_ka().r * ambient.r));
+    ambient.g = std::fmax(0.0, std::fmin(1.0, material.color_ka().g * ambient.g));
+    ambient.b = std::fmax(0.0, std::fmin(1.0, material.color_ka().b * ambient.b));
 
     //only apply coefficient once, since it's the same material:
     diffuse *= material.color_kd(); 
