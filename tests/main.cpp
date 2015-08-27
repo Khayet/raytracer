@@ -10,7 +10,6 @@ TEST_CASE("aufgabe 6.2", "[shapes]") {
   Sphere sph1{};
   glm::vec3 vec{0.0, 0.0, 0.0};
   REQUIRE(vec == sph1.center());
-
   Sphere sph2{sph1};  //implicit copy ctor
   REQUIRE(vec == sph2.center());
 
@@ -149,6 +148,7 @@ TEST_CASE("SDFloader", "[load]") {
 */
 
 TEST_CASE("Renderer", "[render]") {
+  Composite charl(); // Kompositiontest
   SDFloader loader;
   std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded(loader.load(filepath));

@@ -12,6 +12,7 @@
 
 #include "box.hpp"
 #include "color.hpp"
+#include "composite.hpp"
 #include "pixel.hpp"
 #include "ppmwriter.hpp"
 #include "ray.hpp"
