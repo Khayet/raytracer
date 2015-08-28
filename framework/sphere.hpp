@@ -24,7 +24,7 @@ public:
   /* virtual */ std::ostream& print(std::ostream&) const /* override */;
 
   bool intersect(Ray const&, float&)const;
-  glm::vec3 intersect_normal(glm::vec3 const& intersection) const;
+  glm::vec3 intersect_normal(Raystructure const& raystructure) const;
   
 private:
   glm::vec3 center_;

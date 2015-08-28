@@ -2,6 +2,7 @@
 #define COMPOSITE_HPP
 
 #include "shape.hpp"
+#include "raystructure.hpp"
 #include <memory>
 #include <vector>
 
@@ -9,20 +10,22 @@ class Composite: public Shape {
 public:
   Composite();
   Composite(std::vector<std::shared_ptr<Shape>> shapes);
+  Composite(Composite const& copy_composite); 
   ~Composite();
 
-/* virtual */ double area() const;
-/* virtual */ double volume() const;
-  std::vector<std::shared_ptr<Shape>> shapes() const { return shapes_; }
+  /* virtual */ double area() const /* override */;
+  /* virtual */ double volume() const /* override */;
+  /* virtual */ std::ostream& print(std::ostream&) const /* override */;
+
   bool intersect(Ray const&) const;
   bool intersect(Ray const&, float& dist) const;
-  glm::vec3 intersect_normal(glm::vec3 const& intersection) const;
-  std::shared_ptr<Shape> get_children();
-  void add(std::vector<std::shared_ptr<Shape>> const& shape_ptr);
-  void remove(std::vector<std::shared_ptr<Shape>> const& shape_ptr);
+  glm::vec3 intersect_normal(Raystructure const& raystructure) const;
+  std::vector<std::shared_ptr<Shape>> get_children();
+  void add(std::shared_ptr<Shape> const& shared_shape);
+  void remove(std::shared_ptr<Shape> const& shared_shape);
   
 private:
-  std::vector<std::shared_ptr<Shape>> shapes_;
+  std::vector<std::shared_ptr<Shape>> children_;
 };
 
 #endif

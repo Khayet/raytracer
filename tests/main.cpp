@@ -5,6 +5,7 @@
 #include "../framework/box.hpp"
 #include "scene.hpp"
 #include "sdfloader.hpp"
+#include "composite.hpp"
 
 TEST_CASE("aufgabe 6.2", "[shapes]") {
   Sphere sph1{};
@@ -129,7 +130,7 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
 
   REQUIRE(box1.intersect(ray1));
 } 
-
+/* Obsolete intersection need now raystructure
 TEST_CASE("Sphere", "[intersect_normal]") {
   Sphere sph{{0.0,0.0,0.0}, 1.0};
   glm::vec3 intersection{1.0, 0.0, 0.0};
@@ -138,7 +139,7 @@ TEST_CASE("Sphere", "[intersect_normal]") {
   REQUIRE(normal.y == 0.0);
   REQUIRE(normal.z == 0.0);
 }
-
+/*
 /*
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
@@ -148,10 +149,12 @@ TEST_CASE("SDFloader", "[load]") {
 */
 
 TEST_CASE("Renderer", "[render]") {
-  Composite charl(); // Kompositiontest
+  Composite charl; // Kompositiontest
+
   SDFloader loader;
   std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded(loader.load(filepath));
+  charl.print(std::cout);
 }
 
 int main(int argc, char *argv[])

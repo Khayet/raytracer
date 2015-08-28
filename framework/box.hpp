@@ -24,7 +24,7 @@ public:
 
   bool intersect(Ray const&) const;
   bool intersect(Ray const&, float& dist) const;
-  glm::vec3 intersect_normal(glm::vec3 const& intersection) const;
+  glm::vec3 intersect_normal(Raystructure const& raystructure) const;
   
 private:
   glm::vec3 min_;

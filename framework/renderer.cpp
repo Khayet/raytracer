@@ -57,11 +57,12 @@ void Renderer::render(Scene const& scene) {
       float min_distance = std::numeric_limits<float>::max();
 			Ray pixel_ray = shootRay(x, y, scene);
 
+      bool pixel_drawn = false;
       for(auto it : scene.shapes_) {
 				bool test = false;
-        bool pixel_drawn = false;
+
         test = it->intersect(pixel_ray, distance);
-        //std::cout << x << ", " << y << std::endl;
+        std::cout << x << ", " << y << std::endl;
         
         if (test && distance > 0 && min_distance > distance) {          
           pixel_drawn = true;
@@ -74,11 +75,11 @@ void Renderer::render(Scene const& scene) {
 					write(p);
 				} else {
           if (pixel_drawn = false) {
-          //std::cout<<"n ";
-          Pixel p(x,y);
-          p.color = Color(0.5, 0.5, 0.5);
-          write(p);
-         }
+            //std::cout<<"n ";
+            Pixel p(x,y);
+            p.color = Color(0.5, 0.5, 0.5);
+            write(p);
+          }
 			  }
 		  }
     }
@@ -126,7 +127,27 @@ Color Renderer::shade (
       /**
         DIFFUSE LIGHTING
         modeled after Lambert's law
-        diffuse_intensity = 
+        difReflection: 0.444178 0.894562 0.0496423 
+Eyeray: -0.00298141 -0.447212 -0.894423 
+DOTTY: -0.445784
+diff: (0.480387,0,0)
+spec: (0,0,0)
+amb: (0.2,0,0)
+149, 0
+149, 0
+149, 0
+150, 0
+150, 0
+150, 0
+150, 0
+151, 0
+Reflection: 0.444017 0.894641 0.0496613 
+Eyeray: 0.00298141 -0.447212 -0.894423 
+DOTTY: -0.443188
+diff: (0.480613,0,0)
+spec: (0,0,0)
+amb: (0.2,0,0)
+fuse_intensity = 
             (dot product of surface normal and incident vector) 
           * (brightness of light source)
           * (diffuse coefficient of material)
@@ -143,10 +164,10 @@ Color Renderer::shade (
       Ray light_ray = {light_orig,
         (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
 
-      glm::vec3 normal = shape_ptr->intersect_normal(raystructure.intersection_);
+      glm::vec3 normal = shape_ptr->intersect_normal(raystructure);
 
       float dotProd_dif = glm::dot(light_ray.direction, normal);
-
+ 
       diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif;
       diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif;
       diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif;
@@ -161,11 +182,16 @@ Color Renderer::shade (
             (dot product of normalized reflection and spectator vector) 
           ^ (specular coefficient of material)
       */
-      glm::vec3 reflection = shape_ptr->intersect_normal(raystructure.intersection_) + light_ray.direction;     
-      glm::normalize(reflection);
+      glm::vec3 reflection = shape_ptr->intersect_normal(raystructure) + light_ray.direction;     
+      reflection = glm::normalize(reflection);
       glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
       float dotProd_spec = glm::dot(reflection, eyeray_direction);
-
+      std::cout <<"Reflection: "<< reflection.x <<" "
+      << reflection.y <<" "<< reflection.z <<" " << std::endl;
+      std::cout <<"Eyeray: "<< eyeray_direction.x <<" "
+      << eyeray_direction.y <<" "<< eyeray_direction.z <<" " << std::endl;
+      std::cout <<"DOTProduct: "<< dotProd_spec << std::endl;
+      
       specular.r += material.color_ks().r * pow(dotProd_spec, material.m());
       specular.g += material.color_ks().g * pow(dotProd_spec, material.m());
       specular.b += material.color_ks().b * pow(dotProd_spec, material.m());
