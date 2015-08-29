@@ -58,7 +58,7 @@ bool Sphere::intersect(Ray const& ray, float& dist) const {
 
 glm::vec3 Sphere::intersect_normal(Raystructure const& raystructure) const{
   glm::vec3 intersection = raystructure.intersection_;  
-  glm::vec3 normal = intersection - center_;
+  glm::vec3 normal = (intersection - center_);
   normal = glm::normalize(normal);
   return normal;
 }

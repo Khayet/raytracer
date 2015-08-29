@@ -69,13 +69,14 @@ void Renderer::render(Scene const& scene) {
           min_distance = distance;
           Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction, 
             (*it).material().color_ka(), distance, ray_depth);
-          //std::cout<<"DOES INTERSECT"<< std::endl;
+          std::cout<<"DOES INTERSECT "<< std::endl;
 					Pixel p(x,y);
           p.color = shade(it, scene, (*it).material(), intersec_struct);
 					write(p);
 				} else {
-          if (pixel_drawn = false) {
-            //std::cout<<"n ";
+          if (false == pixel_drawn) {
+						std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
+            std::cout<<"NO " << std::endl;
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -127,26 +128,6 @@ Color Renderer::shade (
       /**
         DIFFUSE LIGHTING
         modeled after Lambert's law
-        difReflection: 0.444178 0.894562 0.0496423 
-Eyeray: -0.00298141 -0.447212 -0.894423 
-DOTTY: -0.445784
-diff: (0.480387,0,0)
-spec: (0,0,0)
-amb: (0.2,0,0)
-149, 0
-149, 0
-149, 0
-150, 0
-150, 0
-150, 0
-150, 0
-151, 0
-Reflection: 0.444017 0.894641 0.0496613 
-Eyeray: 0.00298141 -0.447212 -0.894423 
-DOTTY: -0.443188
-diff: (0.480613,0,0)
-spec: (0,0,0)
-amb: (0.2,0,0)
 fuse_intensity = 
             (dot product of surface normal and incident vector) 
           * (brightness of light source)
@@ -165,7 +146,8 @@ fuse_intensity =
         (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
 
       glm::vec3 normal = shape_ptr->intersect_normal(raystructure);
-
+      glm::normalize(normal);
+      
       float dotProd_dif = glm::dot(light_ray.direction, normal);
  
       diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif;
@@ -175,6 +157,7 @@ fuse_intensity =
       diffuse.r = std::fmax(0.0, std::fmin(1.0, diffuse.r));
       diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
       diffuse.b = std::fmax(0.0, std::fmin(1.0, diffuse.b));
+
 
       /**
         SPECULAR LIGHTING
@@ -199,6 +182,8 @@ fuse_intensity =
       specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
       specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));
       specular.b = std::fmax(0.0, std::fmin(1.0, specular.b));
+
+
     }
     
     ambient.r = std::fmax(0.0, std::fmin(1.0, material.color_ka().r * ambient.r));
@@ -249,7 +234,10 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
                           (normalized_j * up) +
                           position + direction; 
   glm::vec3 direc_shot = image_point - position;
-	return Ray(position, direc_shot);		
+  	 std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
+  direc_shot = glm::normalize(direc_shot);
+	   std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
+  return Ray(position, direc_shot);		
 }
 
 unsigned Renderer::width(){
