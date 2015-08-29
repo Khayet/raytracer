@@ -94,7 +94,6 @@ bool Box::intersect(Ray const& r, float& dist) const {
 
   double tmax = std::min(std::min(std::max(tx_min, tx_max),
                   std::max(ty_min, ty_max)), std::max(tz_min, tz_max));
-  std::cout << "TMIN : " << tmin << "TMAX : " << tmax << std::endl;
   //is there a distance between the two intersection points?
   if (tmax < std::max(0.0, tmin)) return false;
 

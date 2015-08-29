@@ -9,7 +9,7 @@ define shape sphere roterHase 3 3 3 5 red
 define shape sphere roterHase 4 5 -5 1.7 red
 define shape sphere roterHase 0 0 -5 2.2 green
 # light
-define light sun 1000 1700 0 0 0 0 .8 .8 .8
+define light sun 1000 1700 0 0.2 0.2 0.2 .8 .8 .8
 # camera 
 define camera eye 45.0 0 0 0 0 0 -1 0 1 0
 # ... and go
