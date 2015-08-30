@@ -150,13 +150,15 @@ fuse_intensity =
       
       float dotProd_dif = glm::dot(light_ray.direction, normal);
  
-      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif;
-      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif;
-      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif;
-
+      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif*material.color_kd().r;
+      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif*material.color_kd().g;
+      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif*material.color_kd().b;
+   
       diffuse.r = std::fmax(0.0, std::fmin(1.0, diffuse.r));
       diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
       diffuse.b = std::fmax(0.0, std::fmin(1.0, diffuse.b));
+
+
 
 
       /**
@@ -165,19 +167,36 @@ fuse_intensity =
             (dot product of normalized reflection and spectator vector) 
           ^ (specular coefficient of material)
       */
+/*
       glm::vec3 reflection = shape_ptr->intersect_normal(raystructure) + light_ray.direction;     
+      reflection = {(reflection.x * (-1)), (reflection.y * (-1)), (reflection.z * (-1))};
       reflection = glm::normalize(reflection);
-      glm::vec3 eyeray_direction = glm::normalize(raystructure.direction_);
+*/
+
+      float dot_temp = glm::dot(normal, glm::normalize(scene.lights_[i].position_ - raystructure.intersection_));
+      glm::vec3 minuend = 
+        {(2 * dot_temp * normal.x), (2 * dot_temp * normal.y),(2 * dot_temp * normal.z)};
+      glm::vec3 reflection = minuend - glm::normalize(raystructure.intersection_ - scene.lights_[i].position_);
+      reflection = glm::normalize(reflection);
+
+
+      glm::vec3 eyeray_direction = glm::normalize(raystructure.intersection_-scene.camera_.position());
       float dotProd_spec = glm::dot(reflection, eyeray_direction);
-      std::cout <<"Reflection: "<< reflection.x <<" "
-      << reflection.y <<" "<< reflection.z <<" " << std::endl;
-      std::cout <<"Eyeray: "<< eyeray_direction.x <<" "
-      << eyeray_direction.y <<" "<< eyeray_direction.z <<" " << std::endl;
-      std::cout <<"DOTProduct: "<< dotProd_spec << std::endl;
       
-      specular.r += material.color_ks().r * pow(dotProd_spec, material.m());
-      specular.g += material.color_ks().g * pow(dotProd_spec, material.m());
-      specular.b += material.color_ks().b * pow(dotProd_spec, material.m());
+      /* DEBUG
+      std::cout << "Reflection: " << reflection.x << " "
+      << reflection.y <<" "<< reflection.z << " " << std::endl;
+      std::cout << "Eyeray: "<< eyeray_direction.x << " " << eyeray_direction.y 
+      << " " << eyeray_direction.z << " " << std::endl;
+      std::cout << "DOTProduct_spec: " << dotProd_spec << std::endl;
+      std::cout << "Normal: " << normal.x << " "
+      << normal.y <<" "<< normal.z << " " << std::endl;      
+      std::cout << "DOTProductTemp: " << dot_temp << std::endl;
+      */
+      
+      specular.r += scene.lights_[i].intensity_dif_.r * material.color_ks().r * pow(dotProd_spec, material.m());
+      specular.g += scene.lights_[i].intensity_dif_.g * material.color_ks().g * pow(dotProd_spec, material.m());
+      specular.b += scene.lights_[i].intensity_dif_.b * material.color_ks().b * pow(dotProd_spec, material.m());
 
       specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
       specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));
@@ -202,8 +221,8 @@ fuse_intensity =
 }
 
 Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
-	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
-/*  double aspect_ratio = x/y;
+/*	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
+  double aspect_ratio = x/y;
   double p_width = 0.1;
   double screen_x = p_width * x;
   double screen_y = screen_x * aspect_ratio;
@@ -213,8 +232,12 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
   aspect_ratio * 
 */
   glm::vec3 position = scene.camera_.position();
-  glm::vec3 direction = scene.camera_.direction();
-  glm::vec3 up = scene.camera_.up();
+  glm::vec3 direction = glm::normalize(scene.camera_.direction());
+  glm::vec3 up = glm::normalize(scene.camera_.up());
+  double fov_hor = scene.camera_.horFOV();
+  double aspect_ratio = width_/height_;
+  double fov_ver = aspect_ratio * fov_hor;
+
   glm::vec3 cam_v = {
     direction.y * up.z - up.y * direction.z,
     direction.z * up.x - up.z * direction.x,
@@ -225,6 +248,7 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
     cam_v.z * direction.x - direction.z * cam_v.x,
     cam_v.x * direction.y - direction.y * cam_v.x,
     };
+
 	float x_coordinate = width_;
 	float y_coordinate = height_;
 
@@ -238,6 +262,7 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
   direc_shot = glm::normalize(direc_shot);
 	   std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
   return Ray(position, direc_shot);		
+
 }
 
 unsigned Renderer::width(){
