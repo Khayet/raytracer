@@ -215,7 +215,7 @@ Color Renderer::shade (
 }
 
 Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
-/*	Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
+/*  Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
   double aspect_ratio = x/y;
   double p_width = 0.1;
   double screen_x = p_width * x;
@@ -243,19 +243,19 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
     cam_v.x * direction.y - direction.y * cam_v.x,
     };
 
-	float x_coordinate = width_;
-	float y_coordinate = height_;
+  float x_coordinate = width_;
+  float y_coordinate = height_;
 
-	float normalized_i = (x / x_coordinate) - 0.5;
+  float normalized_i = (x / x_coordinate) - 0.5;
   float normalized_j = (y / y_coordinate) - 0.5;
   glm::vec3 image_point = (normalized_i * cam_v) + 
                           (normalized_j * up) +
                           position + direction; 
   glm::vec3 direc_shot = image_point - position;
-  	 std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
+     std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
   direc_shot = glm::normalize(direc_shot);
-	   std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
-  return Ray(position, direc_shot);		
+     std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
+  return Ray(position, direc_shot);   
 
 }
 

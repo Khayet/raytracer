@@ -162,6 +162,7 @@ TEST_CASE("SDFloader", "[load]") {
 }
 */
 
+
 TEST_CASE("Renderer", "[render]") {
   Composite charl; // Kompositiontest
 
