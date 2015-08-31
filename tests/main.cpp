@@ -153,15 +153,13 @@ TEST_CASE("Sphere", "[intersect_normal]") {
   REQUIRE(normal.y == 0.0);
   REQUIRE(normal.z == 0.0);
 }
-/*
-/*
-TEST_CASE("SDFloader", "[load]") {
-  SDFloader test;
-  std::string filepath = "../framework/res/render_scene.sdf";
-  Scene loaded(test.load(filepath));
-}
 */
 
+TEST_CASE("SDFloader", "[load]") {
+  SDFloader test;
+  std::string filepath = "../framework/res/render_scene_test.sdf";
+  Scene loaded(test.load(filepath));
+}
 
 TEST_CASE("Renderer", "[render]") {
   Composite charl; // Kompositiontest

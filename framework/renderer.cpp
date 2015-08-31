@@ -7,6 +7,8 @@
 // Renderer
 // -----------------------------------------------------------------------------
 
+#define _USE_MATH_DEFINES //pi
+#include <math.h>
 #include <cmath>
 #include "renderer.hpp"
 Renderer::Renderer()
@@ -62,21 +64,21 @@ void Renderer::render(Scene const& scene) {
 				bool test = false;
 
         test = it->intersect(pixel_ray, distance);
-        std::cout << x << ", " << y << std::endl;
+        //std::cout << x << ", " << y << std::endl;
         
         if (test && distance > 0 && min_distance > distance) {          
           pixel_drawn = true;
           min_distance = distance;
           Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction, 
             (*it).material().color_ka(), distance, ray_depth);
-          std::cout<<"DOES INTERSECT "<< std::endl;
+          //std::cout<<"DOES INTERSECT "<< std::endl;
 					Pixel p(x,y);
           p.color = shade(it, scene, (*it).material(), intersec_struct);
 					write(p);
 				} else {
           if (false == pixel_drawn) {
-						std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
-            std::cout<<"NO " << std::endl;
+						//std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
+            //std::cout<<"NO " << std::endl;
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -205,7 +207,7 @@ Color Renderer::shade (
 
     //only apply coefficient once, since it's the same material:
     diffuse *= material.color_kd(); 
-    std::cout << "diff: " << diffuse << "spec: " << specular << "amb: " << ambient;
+    //std::cout << "diff: " << diffuse << "spec: " << specular << "amb: " << ambient;
     shade_color = diffuse + specular + ambient;
 
     //std::cout << "(" << shade_color.r << ", " << shade_color.g << ", " << shade_color.b << ")" << "\n";
@@ -215,24 +217,17 @@ Color Renderer::shade (
 }
 
 Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
-/*  Ray shotRay{{0.0,0.0,0.0}, {0.0,0.0,-1.0}};
-  double aspect_ratio = x/y;
-  double p_width = 0.1;
-  double screen_x = p_width * x;
-  double screen_y = screen_x * aspect_ratio;
-  
-  tan(scene.camera_.camera.horFOV()/2);
-  
-  aspect_ratio * 
-*/
   glm::vec3 position = scene.camera_.position();
   glm::vec3 direction = glm::normalize(scene.camera_.direction());
   glm::vec3 up = glm::normalize(scene.camera_.up());
-  double fov_hor = scene.camera_.horFOV();
-  double aspect_ratio = width_/height_;
-  double fov_ver = aspect_ratio * fov_hor;
+  double fov_hor = scene.camera_.horFOV() * (M_PI/180); //radians!
+  double ratio = static_cast<double>(width_)
+                /static_cast<double>(height_);
+  double ratio_inv = static_cast<double>(height_) 
+                    /static_cast<double>(width_);
+  double fov_ver = ratio * fov_hor; //radians!
 
-  glm::vec3 cam_v = {
+  /*glm::vec3 cam_v = {
     direction.y * up.z - up.y * direction.z,
     direction.z * up.x - up.z * direction.x,
     direction.x * up.y - up.y * direction.x,
@@ -242,21 +237,29 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
     cam_v.z * direction.x - direction.z * cam_v.x,
     cam_v.x * direction.y - direction.y * cam_v.x,
     };
-
-  float x_coordinate = width_;
-  float y_coordinate = height_;
-
-  float normalized_i = (x / x_coordinate) - 0.5;
-  float normalized_j = (y / y_coordinate) - 0.5;
-  glm::vec3 image_point = (normalized_i * cam_v) + 
-                          (normalized_j * up) +
-                          position + direction; 
-  glm::vec3 direc_shot = image_point - position;
-     std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
-  direc_shot = glm::normalize(direc_shot);
-     std::cout << direc_shot.x << " " << direc_shot.y << " " << direc_shot.z << std::endl;
+    */
+  
+  float dist = 0.5 / std::tan(0.5*fov_hor);
+  glm::vec3 dist_vec = direction * dist;
+  /*
+  std::cout << "dist_vec = " << "(" << dist_vec.x << ", "
+            << dist_vec.y << ", " 
+            << dist_vec.z << ")\n";
+  */
+  double x_pos = static_cast<double>(x) / static_cast<double>(width_);
+  double y_pos = ratio_inv * (static_cast<double>(y) / static_cast<double>(height_));
+  glm::vec3 pos_on_plane{ x_pos-0.5, y_pos-0.5, 0.0 };
+  
+  /*
+  std::cout << "pos_on_plane = " << "(" << pos_on_plane.x << ", "
+            << pos_on_plane.y << ", " << pos_on_plane.z << ")\n";
+  */
+  glm::vec3 image_point = position + dist_vec + pos_on_plane;
+  glm::vec3 direc_shot = glm::normalize(image_point - position);
+  
+  std::cout << direc_shot.x << ", " << direc_shot.y << ", " << direc_shot.z << std::endl;
+  
   return Ray(position, direc_shot);   
-
 }
 
 unsigned Renderer::width(){
