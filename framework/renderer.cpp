@@ -128,7 +128,7 @@ Color Renderer::shade (
       /**
         DIFFUSE LIGHTING
         modeled after Lambert's law
-fuse_intensity = 
+        diffuse_intensity = 
             (dot product of surface normal and incident vector) 
           * (brightness of light source)
           * (diffuse coefficient of material)
@@ -158,27 +158,23 @@ fuse_intensity =
       diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
       diffuse.b = std::fmax(0.0, std::fmin(1.0, diffuse.b));
 
-
-
-
       /**
         SPECULAR LIGHTING
         diffuse_intensity = 
             (dot product of normalized reflection and spectator vector) 
           ^ (specular coefficient of material)
       */
-/*
+      /*
       glm::vec3 reflection = shape_ptr->intersect_normal(raystructure) + light_ray.direction;     
       reflection = {(reflection.x * (-1)), (reflection.y * (-1)), (reflection.z * (-1))};
       reflection = glm::normalize(reflection);
-*/
+      */
 
       float dot_temp = glm::dot(normal, glm::normalize(scene.lights_[i].position_ - raystructure.intersection_));
       glm::vec3 minuend = 
         {(2 * dot_temp * normal.x), (2 * dot_temp * normal.y),(2 * dot_temp * normal.z)};
       glm::vec3 reflection = minuend - glm::normalize(raystructure.intersection_ - scene.lights_[i].position_);
       reflection = glm::normalize(reflection);
-
 
       glm::vec3 eyeray_direction = glm::normalize(raystructure.intersection_-scene.camera_.position());
       float dotProd_spec = glm::dot(reflection, eyeray_direction);
@@ -201,8 +197,6 @@ fuse_intensity =
       specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
       specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));
       specular.b = std::fmax(0.0, std::fmin(1.0, specular.b));
-
-
     }
     
     ambient.r = std::fmax(0.0, std::fmin(1.0, material.color_ka().r * ambient.r));

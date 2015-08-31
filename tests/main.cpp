@@ -130,9 +130,10 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
 
   REQUIRE(box1.intersect(ray1));
 } 
+
 TEST_CASE("aufgabe 8intersect", "[8intersect]") {
   Ray ray1{{0.0,0.0,0.0}, {0, -0.447214, -0.894427}};
-  Box box1{{-100, -80, -200}, {100, 80, -100}};
+  Box box1{{-100, -80, -100}, {100, 80, -200}};
 
   float distance{0.0};
   bool test = false;
@@ -160,7 +161,7 @@ TEST_CASE("SDFloader", "[load]") {
   Scene loaded(test.load(filepath));
 }
 */
-/*
+
 TEST_CASE("Renderer", "[render]") {
   Composite charl; // Kompositiontest
 
@@ -168,7 +169,7 @@ TEST_CASE("Renderer", "[render]") {
   std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded(loader.load(filepath));
   charl.print(std::cout);
-}*/
+}
 
 int main(int argc, char *argv[])
 {
