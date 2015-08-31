@@ -23,6 +23,12 @@ Scene SDFloader::load(std::string const& filename) {
 	glm::vec3 out_dir;
 	glm::vec3 out_up;
 
+  std::string composite_name;
+  std::unordered_map<std::string,  std::shared_ptr<Shape>> composite_;
+  std::unordered_map<std::string, std::shared_ptr<Shape>> copy_temp;
+  std::unordered_map<std::string, std::shared_ptr<Shape>> map_children;
+  std::vector<std::string> parsed_children;	
+
   std::vector<Light> lights_;
   if (!file) {
     std::cout << "file not open \n";
@@ -101,6 +107,7 @@ Scene SDFloader::load(std::string const& filename) {
 						auto shared_sphere = std::make_shared<Sphere>(Sphere
 							{it->second, sphere_name, glm::vec3{center_x,center_y,center_z},radius});
 						shapes_.push_back(shared_sphere);
+						map_children.insert(std::make_pair(sphere_name, shared_sphere));
 					}
 					
 					if (curr_word =="box"){
@@ -132,6 +139,42 @@ Scene SDFloader::load(std::string const& filename) {
 							{it->second, box_name, glm::vec3{min_x, min_y, min_z}, 
 																		 glm::vec3{max_x, max_y, max_z}});
 						shapes_.push_back(shared_box); //push Pointer statt Box	
+						map_children.insert(std::make_pair(box_name, shared_box)); //Add to 
+						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
+					}
+					if (curr_word =="composite"){
+						std::cout << " COMPOSITE " << std::endl; //TESTZEILE
+						test >> curr_word;
+						  std::cout<<"NAme compy" << curr_word << " " << std::endl;
+						composite_name = curr_word;
+						std::string temp;
+						test >> temp;
+						std::string previous_string;
+						while (false == temp.empty() && temp != previous_string) {
+							previous_string = temp;
+							parsed_children.push_back(temp);	
+						  std::cout<<"Children" << temp << " " << std::endl;
+						  test >> temp;  
+					  }
+					  std::string shape_name;
+					  for (auto const& it : parsed_children) {
+              auto it_child = map_children.find((it));
+              shape_name = it_child->second->name();				
+						  copy_temp.insert(std::make_pair(
+						    it_child->second->name(), 
+						    it_child->second));
+						}
+		        Material temp_mat
+						{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
+						Composite temp_composite
+							{temp_mat, composite_name, copy_temp};
+						std::cout << "Habe "<< temp_composite.name()<< " erschaffen." << std::endl;//TESTZEILE
+						auto shared_composite = std::make_shared<Composite>(temp_composite);
+						shapes_.push_back(shared_composite); //	
+						// Add to Componenten Database
+            map_children.insert(std::make_pair(composite_name, shared_composite));
+            composite_.insert(std::make_pair(composite_name, shared_composite));
+
 						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
 					}
 				}	
@@ -197,9 +240,13 @@ Scene SDFloader::load(std::string const& filename) {
 		      out_eye_pos, 
 		      out_dir, 
 		      out_up);
-				
+		    Material root_mat
+						{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
+				Composite root{root_mat, "root", composite_, map_children};
+				std::shared_ptr<Composite> shared_composite = 
+				    std::make_shared<Composite>(root);
 				Renderer rend{out_x_res, out_y_res, out_file_name};
-				rend.render(Scene(materials_, shapes_, lights_, cam));
+				rend.render(Scene(materials_, shapes_, lights_, shared_composite, cam));
 			}
 			if(curr_word== "#"){
 			}						
@@ -213,11 +260,20 @@ Scene SDFloader::load(std::string const& filename) {
       out_eye_pos, 
       out_dir, 
       out_up);
-		Scene read_scene{materials_, shapes_, lights_, camera_scene};
+    Material root_mat
+						{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
+    Composite root{root_mat, "root", composite_, map_children};
+		std::shared_ptr<Composite> shared_composite = 
+				    std::make_shared<Composite>(root);
+		Scene read_scene{materials_, shapes_, lights_, shared_composite, camera_scene};
 		return read_scene;	
 	}
-
-	Scene default_read{materials_, shapes_, lights_, 
-	Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
+	Material root_mat
+						{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
+  Composite root{root_mat, "root", composite_, map_children};
+	std::shared_ptr<Composite> shared_composite = 
+				    std::make_shared<Composite>(root);
+	Scene default_read{materials_, shapes_, lights_, shared_composite, 
+	  Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
 	return default_read;
 }

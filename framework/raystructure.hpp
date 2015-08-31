@@ -1,12 +1,19 @@
 #ifndef BUW_RAYSTRUCTURE_HPP
 #define BUW_RAYSTRUCTURE_HPP
 
-#include "ray.hpp"
+
 #include "color.hpp"
+#include "material.hpp"
+#include "ray.hpp"
 
 struct Raystructure{
-	Raystructure (glm::vec3 const& origin, glm::vec3 const& direction, Color const& curr_color, 
-	double distance, int ray_depth) 
+	Raystructure (
+	  glm::vec3 const& origin, 
+	  glm::vec3 const& direction, 
+	  Color const& curr_color, 
+	  Material const& material,
+	  double distance, 
+	  int ray_depth) 
 	  : origin_{origin}, direction_{direction}, 
 	intersection_{(distance * direction.x), (distance * direction.y),(distance * direction.z)}, 
 	eye_ray_{origin, direction}, curr_color_{curr_color}, distance_{distance}, ray_depth_{ray_depth}{}

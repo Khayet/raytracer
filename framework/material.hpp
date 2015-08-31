@@ -11,6 +11,7 @@ class Material{
 		Material(Color ka, Color kd, Color ks, float m);
 		Material();
 		Material(std::string name, Color ka, Color kd, Color ks, float m);
+		Material(Material const& copy_material);
 
 		/* virtual */ std::ostream& print(std::ostream& os) const;
 		std::string name() const;

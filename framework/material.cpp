@@ -11,7 +11,9 @@
 		Material::Material(std::string name, Color ka,Color  kd, Color  ks, float m) 
 		: name_{name}, ka_{ka}, kd_{kd}, ks_{ks}, m_{m} {
 		}
-
+		Material::Material(Material const& copy_material) 
+		: name_{copy_material.name()}, ka_{copy_material.color_ka()}, kd_{copy_material.color_kd()}, ks_{copy_material.color_ks()}, m_{copy_material.m()} {
+		}
 		/* virtual */ std::ostream& Material::print(std::ostream& os) const {
 			os << "\n";
 			os << "Material \"" << name_ << "\" : \n";

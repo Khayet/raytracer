@@ -52,6 +52,14 @@ bool Box::intersect(Ray const& r) const {
   return Box::intersect(r, foo);
 }
 
+bool Box::intersect(
+    Ray const& ray, 
+    float& dist, 
+    std::shared_ptr<Shape> & ptr) const{
+  return Box::intersect(ray, dist);
+}
+
+
 bool Box::intersect(Ray const& r, float& dist) const {
   glm::vec3 dir = glm::normalize(r.direction);
 
@@ -61,52 +69,46 @@ bool Box::intersect(Ray const& r, float& dist) const {
     respectively.
   */
 
-  double tx_min, ty_min, tz_min, tx_max, ty_max, tz_max;
-
   /*
-    tX_min: possible t-values of intersect point on the box side nearer to 
+    mini: possible t-values of intersect point on the box side nearer to 
             ray.origin.
-    tX_max: possible t-values of  intersect point on the far side of the box.
-  */
-
-  if (dir.x != 0) {
-    tx_min = (std::min(min_.x - r.origin.x, max_.x - r.origin.x)) / dir.x;
-    tx_max = (std::max(min_.x - r.origin.x, max_.x - r.origin.x)) / dir.x;
-  } else tx_min = 0;
-
-  if (dir.y != 0) {
-    ty_min = (std::min(min_.y - r.origin.y, max_.y - r.origin.y)) / dir.y;
-    ty_max = (std::max(min_.y - r.origin.y, max_.y - r.origin.y)) / dir.y;
-  } else ty_min = 0;
-  
-  if (dir.z != 0) {
-    tz_min = (std::min(min_.z - r.origin.z, max_.z - r.origin.z)) / dir.z;
-    tz_max = (std::max(min_.z - r.origin.z, max_.z - r.origin.z)) / dir.z;
-  } else tz_min = 0;
-
-  /*
+    maxi: possible t-values of  intersect point on the far side of the box.
     tmin: t-value of intersection point on near box side
     tmax: t-value of intersection point on far box side
   */
+  float mini, maxi;
+  float tmin, tmax;
 
-  double tmin = std::max(std::max(std::min(tx_min, tx_max), 
-                  std::min(ty_min, ty_max)), std::min(tz_min, tz_max));
+  tmin = std::min((min_.x - r.origin.x) * (1/dir.x), //multiply with inverted vector
+                  (max_.x - r.origin.x) * (1/dir.x));
+  tmax = std::max((min_.x - r.origin.x) * (1/dir.x),
+                  (max_.x - r.origin.x) * (1/dir.x));
 
-  double tmax = std::min(std::min(std::max(tx_min, tx_max),
-                  std::max(ty_min, ty_max)), std::max(tz_min, tz_max));
+  mini = (min_.y - r.origin.y) * (1/dir.y);
+  maxi = (max_.y - r.origin.y) * (1/dir.y);
+  tmin = std::max(tmin, std::min(mini, maxi));
+  tmax = std::min(tmax, std::max(mini, maxi));
+
+  mini = (min_.z - r.origin.z) * (1/dir.z);
+  maxi = (max_.z - r.origin.z) * (1/dir.z);
+  tmin = std::max(tmin, std::min(mini, maxi));
+  tmax = std::min(tmax, std::max(mini, maxi));
+
   //is there a distance between the two intersection points?
-  if (tmax < std::max(0.0, tmin)) return false;
+  if (tmax < std::max<float>(0.0, tmin)) return false;
 
-  //calculate distance between origin and intersection point:
-  dist = std::sqrt( dir.x*(tmin-r.origin.x)*dir.x*(tmin-r.origin.x) 
-                        + dir.y*(tmin-r.origin.y)*dir.y*(tmin-r.origin.y)
-                        + dir.z*(tmin-r.origin.z)*dir.z*(tmin-r.origin.z) ); 
-
+  //calculate distance between origin and intersection point (pythagoras):
+   dist = std::sqrt(  (dir.x*tmin * dir.x*tmin) 
+                    + (dir.y*tmin * dir.y*tmin)
+                    + (dir.z*tmin * dir.z*tmin) );
   //std::cout<<"Do you even intersect? BOX"<< std::endl;
   return true;
 }
 
 glm::vec3 Box::intersect_normal(Raystructure const& raystructure) const{
+//	std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y << 
+//	raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x << 
+//	raystructure.direction_.y<< raystructure.direction_.z << " "<< std::endl;
   glm::vec3 center = {((min_.x + max_.x)/2),((min_.y + max_.y)/2),((min_.z + max_.z)/2)};
   glm::vec3 normal = {0.0, 0.0, 0.0};
   float min_distance = std::numeric_limits<float>::max();
