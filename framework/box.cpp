@@ -89,6 +89,7 @@ bool Box::intersect(Ray const& r, float& dist) const {
   tmin = std::max(tmin, std::min(mini, maxi));
   tmax = std::min(tmax, std::max(mini, maxi));
 
+
   mini = (min_.z - r.origin.z) * (1/dir.z);
   maxi = (max_.z - r.origin.z) * (1/dir.z);
   tmin = std::max(tmin, std::min(mini, maxi));

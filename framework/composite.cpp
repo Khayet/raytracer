@@ -37,6 +37,7 @@ Composite::~Composite(){}
   os << "\n";
   return os;
 }
+
 bool Composite::intersect(Ray const& ray) const{
 	float distance = 0.0;
 	bool intersect_test = false;
@@ -158,9 +159,6 @@ glm::vec3 Composite::intersect_normal(Raystructure const& raystructure) const{
   std::cout << "Error: No children available" << std::endl;
   return {0.0, 0.0, 0.0};
 } 
-
-
-
 
 std::unordered_map<std::string ,std::shared_ptr<Shape>> Composite::get_children(){
 	return children_;
