@@ -64,10 +64,10 @@ bool Composite::intersect(Ray const& ray, float& dist,std::shared_ptr<Shape> & p
 	bool intersect_test = false;
 	float min_distance = std::numeric_limits<float>::max();	
 	for (auto it : children_) {
-				std::cout <<"GOT CALLED WHAT IS YOUR INQUIRE?"<< std::endl;
+				//std::cout <<"GOT CALLED WHAT IS YOUR INQUIRE?"<< std::endl;
 	  intersect_test = it.second->intersect(ray, dist,ptr);
 	  std::cout <<"DIST ?:"<<dist << std::endl;
-	  		std::cout <<it.second->name()<< std::endl;
+	  		//std::cout <<it.second->name()<< std::endl;
 	  if (true == intersect_test && min_distance >= dist)
 	  {
 			min_distance = dist;
@@ -119,17 +119,17 @@ bool Composite::intersect_ptr(Ray const& ray, float& dist, std::shared_ptr<Shape
 		  exist_sect = true;
 		  min_distance = distance;
 		  correct_child = ptr->name();
-		std::cout <<"Name #################################################################################################################################################"<< (it.second)<< std::endl;
+		//std::cout <<"Name #################################################################################################################################################"<< (it.second)<< std::endl;
 		}
 	}
 	if(exist_sect) {
     auto it = database_.find(correct_child);
-   std::cout <<"LOLOOKOAWKOK$$S"<< it->second->name();
+   //std::cout <<"LOLOOKOAWKOK$$S"<< it->second->name();
   // ptr = (it->second);//ererererotr
     
 	} 
 
-	std::cout << "       " ;
+	//std::cout << "       " ;
 	dist = distance;
 	return intersect_test;
 }

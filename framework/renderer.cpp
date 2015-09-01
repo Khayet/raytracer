@@ -77,9 +77,9 @@ void Renderer::render(Scene const& scene) {
 				} else {
           if (false == pixel_drawn) {
 						//std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
-						std::cout << intersect_struct.distance_ <<  std::endl;
+						//std::cout << intersect_struct.distance_ <<  std::endl;
 
-            std::cout<<"NO " << std::endl;
+            //std::cout<<"NO " << std::endl;
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -87,7 +87,7 @@ void Renderer::render(Scene const& scene) {
 			  }
 		  }
     }
-    std::cout << "GROESSE: " << scene.materials_.size();
+    //std::cout << "GROESSE: " << scene.materials_.size();
   ppm_.save(filename_);
 }
 
@@ -159,7 +159,7 @@ Color Renderer::shade (
       if (true == shadow_point.is_hit_) {
 			  shadow_factor = 0;
 			}
-			
+			/*
       std::cout << "What kind of Shadow?" << in_shadow << std::endl;       
       std::cout << "Intersektion (" << raystructure.intersection_.x << ", " << raystructure.intersection_.y << ", " << raystructure.intersection_.z << ") " << std::endl;
       std::cout << "Lichtstart (" << light_orig.x << ", " << light_orig.y << ", " << light_orig.z << ") " << std::endl;
@@ -167,7 +167,7 @@ Color Renderer::shade (
 
       std::cout << "Shadowpoint (" << shadow_point.intersection_.x << ", " << shadow_point.intersection_.y << ", " << shadow_point.intersection_.z << ") " << std::endl;
       std::cout << "Distance (" << shadow_point.distance_ << ", " << shadow_point.distance_ << ", " << shadow_point.distance_ << ") " << std::endl;
-      
+      */
       
       glm::vec3 normal = raystructure.normal_;
       glm::normalize(normal);

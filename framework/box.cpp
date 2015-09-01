@@ -4,15 +4,15 @@
 Box::Box() : 
     Shape{},
     min_{glm::vec3{0.0, 0.0, 0.0}},
-    max_{glm::vec3{0.0, 0.0, 0.0}} { std::cout << "ctor box ()" << "\n"; }
+    max_{glm::vec3{0.0, 0.0, 0.0}} { /*std::cout << "ctor box ()" << "\n";*/ }
 
 Box::Box(glm::vec3 const& min, glm::vec3 const& max) : 
-    Shape{}, min_{min}, max_{max} { std::cout << "ctor box (min, max)" << "\n"; }
+    Shape{}, min_{min}, max_{max} { /*std::cout << "ctor box (min, max)" << "\n";*/}
 
 Box::Box(Material const& material, std::string const& n,
     glm::vec3 const& min, glm::vec3 const& max) :
     Shape{material, n}, min_{min}, max_{max} {
-      std::cout << "ctor box (material, name, min, max)" << "\n";
+      //std::cout << "ctor box (material, name, min, max)" << "\n";
     }
 
 Box::~Box() { std::cout << "Box::~Box" << "\n"; }
@@ -160,8 +160,8 @@ void Box::translate(glm::vec3 const& t_vec) {
   glm::mat4 t_mat{1.0};
   t_mat[3] = glm::vec4(t_vec, 1); //create correct transformation matrix
 
-  min_T = min_T * t_mat; 
-  max_T = max_T * t_mat;
+  min_T = t_mat * min_T; //!! order is important !! 
+  max_T = t_mat * max_T;
 
   min_ = glm::vec3(min_T);
   max_ = glm::vec3(max_T);

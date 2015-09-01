@@ -40,15 +40,15 @@ Scene SDFloader::load(std::string const& filename) {
 		std::string curr_word;
 		while(test >> curr_word)
 		{
-			std::cout << "Lese neue Zeile:"<< std::endl; //TESTZEILE
+			//std::cout << "Lese neue Zeile:"<< std::endl; //TESTZEILE
 			if (curr_word =="define")
 			{
-				std::cout << "Define what?"; 
+				//std::cout << "Define what?"; 
 				test >> curr_word;
 			
 				if (curr_word =="material")
 				{
-					std::cout << " MATERIAL " << std::endl; //TEST
+					//std::cout << " MATERIAL " << std::endl; //TEST
 					test >> curr_word;
 					std::string material_name = curr_word;
 					float ka_f;
@@ -75,7 +75,7 @@ Scene SDFloader::load(std::string const& filename) {
 					Material temp_mat
 						{material_name, Color{ka_f,ka_s,ka_t}, Color{kd_f,kd_s,kd_t},Color{ks_f,ks_s,ks_t}, exp_m};
 					materials_.insert(std::make_pair(material_name,temp_mat));
-					std::cout << "Habe "<< temp_mat.name()<< " erschaffen." << std::endl;
+					//std::cout << "Habe "<< temp_mat.name()<< " erschaffen." << std::endl;
 					auto shared_material = std::make_shared<Material>(Material
 						{material_name, Color{ka_f,ka_s,ka_t}, Color{kd_f,kd_s,kd_t},Color{ks_f,ks_s,ks_t}, exp_m});
 				}
@@ -83,7 +83,7 @@ Scene SDFloader::load(std::string const& filename) {
 				{
 						test >> curr_word;
 					if (curr_word =="sphere"){
-						std::cout << " SPHERE " << std::endl; //TESTZEILE
+						//std::cout << " SPHERE " << std::endl; //TESTZEILE
 						test >> curr_word;
 						std::string sphere_name = curr_word;
 						double center_x;
@@ -102,7 +102,7 @@ Scene SDFloader::load(std::string const& filename) {
 						it = materials_.find(sphmaterial_name);
 						Sphere temp_sphere
 							{it->second, sphere_name, glm::vec3{center_x,center_y,center_z},radius};
-							std::cout << "Habe "<< temp_sphere.name()<< " erschaffen." << std::endl;//TESTZEILE
+							//std::cout << "Habe "<< temp_sphere.name()<< " erschaffen." << std::endl;//TESTZEILE
 						auto shared_sphere = std::make_shared<Sphere>(Sphere
 							{it->second, sphere_name, glm::vec3{center_x,center_y,center_z},radius});
 						shapes_.push_back(shared_sphere);
@@ -110,7 +110,7 @@ Scene SDFloader::load(std::string const& filename) {
 					}
 					
 					if (curr_word =="box"){
-						std::cout << " BOX " << std::endl; //TESTZEILE
+						//std::cout << " BOX " << std::endl; //TESTZEILE
 						test >> curr_word;
 						std::string box_name = curr_word;
 						double min_x;
@@ -133,20 +133,20 @@ Scene SDFloader::load(std::string const& filename) {
 						Box temp_box
 							{it->second, box_name, glm::vec3{min_x, min_y, min_z}, 
 																		 glm::vec3{max_x, max_y, max_z}};
-						std::cout << "Habe "<< temp_box.name()<< " erschaffen." << std::endl;//TESTZEILE
+						//std::cout << "Habe "<< temp_box.name()<< " erschaffen." << std::endl;//TESTZEILE
 						auto shared_box = std::make_shared<Box>(Box
 							{it->second, box_name, glm::vec3{min_x, min_y, min_z}, 
 																		 glm::vec3{max_x, max_y, max_z}});
 						shapes_.push_back(shared_box); //push Pointer statt Box	
 						map_children.insert(std::make_pair(box_name, shared_box)); //Add to 
-						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
+						//std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
 					}
 					if (curr_word =="composite"){
   						std::vector<std::string> parsed_children;
             std::unordered_map<std::string, std::shared_ptr<Shape>> copy_temp;	
-						std::cout << " COMPOSITE " << std::endl; //TESTZEILE
+						//std::cout << " COMPOSITE " << std::endl; //TESTZEILE
 						test >> curr_word;
-						  std::cout<<"NAME des compy: " << curr_word << " " << std::endl;
+						  //std::cout<<"NAME des compy: " << curr_word << " " << std::endl;
 						composite_name = curr_word;
 						std::string temp;
 						test >> temp;
@@ -154,7 +154,7 @@ Scene SDFloader::load(std::string const& filename) {
 						while (false == temp.empty() && temp != previous_string) {
 							previous_string = temp;
 							parsed_children.push_back(temp);	
-						  std::cout<<"Children: " << temp << " " << std::endl;
+						  //std::cout<<"Children: " << temp << " " << std::endl;
 						  test >> temp;  
 					  }
 					  std::string shape_name;
@@ -169,14 +169,14 @@ Scene SDFloader::load(std::string const& filename) {
 						{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
 						Composite temp_composite
 							{temp_mat, composite_name, copy_temp};
-						std::cout << "Habe "<< temp_composite.name()<< " erschaffen." << std::endl;//TESTZEILE
+						//std::cout << "Habe "<< temp_composite.name()<< " erschaffen." << std::endl;//TESTZEILE
 						auto shared_composite = std::make_shared<Composite>(temp_composite);
 						shapes_.push_back(shared_composite); //	
 						// Add to Componenten Database
             map_children.insert(std::make_pair(composite_name, shared_composite));
             composite_.insert(std::make_pair(composite_name, shared_composite));
 
-						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
+						//std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
 					}
 				}	
 				if(curr_word== "light"){
@@ -204,12 +204,12 @@ Scene SDFloader::load(std::string const& filename) {
 							{light_name, glm::vec3{pos_x, pos_y, pos_z}, 
 							 Color{int_amb_r, int_amb_b, int_amb_g}, 
 							 Color{int_dif_r,int_dif_b,int_dif_g}};
-					std::cout << "Habe "<< temp_light.name_<< " erschaffen." << std::endl;
+					//std::cout << "Habe "<< temp_light.name_<< " erschaffen." << std::endl;
 					lights_.push_back(temp_light);
 				}
 			
 					if(curr_word == "camera"){ 
-					std::cout << " CAMERA " << std::endl; //TESTZEILE
+					//std::cout << " CAMERA " << std::endl; //TESTZEILE
 					test >> curr_word;
 					out_camera_name = curr_word;
 					test >> out_fov_x;					
@@ -228,7 +228,7 @@ Scene SDFloader::load(std::string const& filename) {
 
 			if(curr_word == "render") {
 
-				std::cout << " RENDER " << std::endl; //TESTZEILE
+				//std::cout << " RENDER " << std::endl; //TESTZEILE
 				test >> curr_word;
 				out_rendcam_name = curr_word;
 				test >> out_file_name;
