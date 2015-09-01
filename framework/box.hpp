@@ -31,6 +31,11 @@ public:
   glm::vec3 intersect_normal(Ray const& ray) const;
   Raystructure raystruct_intersect(Ray const& r) const;
   
+ /* virtual void translate(glm::vec3 const&) override; 
+  virtual void scale(double) override;
+  virtual void rotate(double) override;
+  virtual void rotate(glm::vec3 const&) override;
+  */
 private:
   glm::vec3 min_;
   glm::vec3 max_;

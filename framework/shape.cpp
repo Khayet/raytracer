@@ -1,10 +1,11 @@
 #include "shape.hpp"
 //
-Shape::Shape() : material_{Material{}}, name_{} {
+Shape::Shape() : material_{Material{}}, name_{}, 
+  world_transformation_{1.0}, world_transformation_inv_{glm::inverse(world_transformation_)} {
   std::cout << "ctor Shape ()" << "\n";
 }
-Shape::Shape(Material const& material, std::string const& n) : material_{material}, name_{n} {
-  std::cout << "ctor Shape (material, string)" << "\n";
+Shape::Shape(Material const& material, std::string const& n) : material_{material}, name_{n}, 
+  world_transformation_{1.0}, world_transformation_inv_{glm::inverse(world_transformation_)} {
 }
 
 /* virtual */ Shape::~Shape() {

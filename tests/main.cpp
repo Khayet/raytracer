@@ -170,6 +170,21 @@ TEST_CASE("Renderer", "[render]") {
   charl.print(std::cout);
 }
 
+TEST_CASE("ŕay_transform", "[transform]") {
+  Ray ray{glm::vec3(2.0, 1.5, 3.0), glm::vec3(1.1, 1.2, 1.3)};
+
+  glm::mat4 mat{2.0};
+  Ray_T r{ray.transform(mat)};
+
+  REQUIRE(4.0 == r.origin[0]);
+
+  mat = glm::inverse(mat);
+
+  r.transform(mat);
+  ray = {glm::vec3(r.origin), glm::vec3(r.direction)};
+  REQUIRE(ray.origin.x == 2.0);
+}
+
 int main(int argc, char *argv[])
 {
   return Catch::Session().run(argc, argv);
