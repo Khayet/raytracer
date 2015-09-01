@@ -21,10 +21,13 @@ struct Raystructure{
 	  Color const& curr_color, 
 	  Material const& material,
 	  double distance, 
-	  glm::vec3 const& normal) 
+	  glm::vec3 const& normal,
+	  bool is_hit) 
 	  : origin_{origin}, direction_{direction}, 
 	intersection_{(distance * direction.x), (distance * direction.y),(distance * direction.z)}, 
-	eye_ray_{origin, direction}, curr_color_{curr_color}, material_{material}, distance_{distance},  normal_{normal}{}
+	eye_ray_{origin, direction}, curr_color_{curr_color}, material_{material}, distance_{distance},  
+	  normal_{normal},
+	  is_hit_{is_hit}{}
 	Raystructure (Raystructure const& copy_raystruct) 
 	  : origin_{copy_raystruct.origin_}, 
 	  direction_{copy_raystruct.direction_}, 
@@ -33,7 +36,9 @@ struct Raystructure{
     curr_color_{copy_raystruct.curr_color_}, 
     material_{copy_raystruct.material_},
     distance_{copy_raystruct.distance_},  
-	  normal_{copy_raystruct.normal_}{}
+	  normal_{copy_raystruct.normal_},
+	  is_hit_{copy_raystruct.is_hit_}
+	  {}
 
   glm::vec3 origin_;
   glm::vec3 direction_;
@@ -43,5 +48,6 @@ struct Raystructure{
   Material material_;
 	double distance_;
   glm::vec3 normal_;
+  bool is_hit_;
 };
 #endif

@@ -158,12 +158,12 @@ Raystructure Composite::raystruct_intersect(Ray const& r) const {
   bool exist_sect = false;
 	float min_distance = std::numeric_limits<float>::max();
   min_distance = min_distance/2;
-  	std::cout <<"#####MINDISTANCE: " << min_distance<< std::endl;
+  	//std::cout <<"#####MINDISTANCE: " << min_distance<< std::endl;
   float distance = 0;
   Raystructure correct_candidate; 
 	for (auto&& it : children_) {
 	  Raystructure struct_candidate = it.second->raystruct_intersect(r);
-	  if (struct_candidate.distance_ < min_distance) {
+	  if (struct_candidate.distance_ < min_distance && struct_candidate.is_hit_) {
 		  exist_sect = true;
 		  min_distance = distance;
 		  correct_candidate = struct_candidate;

@@ -146,9 +146,9 @@ Raystructure Box::raystruct_intersect(Ray const& r) const {
   intersect_test = intersect(r, distance);
   if (true == intersect_test){
     return Raystructure{r.origin, r.direction, Color{0,0,0}, 
-		                  material(), distance,	intersect_normal(r)};
+		                  material(), distance,	intersect_normal(r),intersect_test};
 	}
 	return Raystructure{r.origin, r.direction, Color{0,0,0}, 
 		                  material(), std::numeric_limits<float>::max(),	
-		                  glm::vec3{0, 0, 0}};
+		                  glm::vec3{0, 0, 0},intersect_test};
 }
