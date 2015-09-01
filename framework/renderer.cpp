@@ -122,6 +122,8 @@ Color Renderer::shade (
 
     for (int i = 0; i < scene.lights_.size(); ++i) {      
 
+      float shadow_factor = 1; //If 0 nullify diffuse and specular summand 
+      
       //sum up ambient light:
       ambient.r += scene.lights_[i].intensity_amb_.r;
       ambient.g += scene.lights_[i].intensity_amb_.g;
@@ -135,26 +137,45 @@ Color Renderer::shade (
           * (brightness of light source)
           * (diffuse coefficient of material)
       */
+      
       //respects calculation error, if intersection lies within Shape
       glm::vec3 light_orig = { 
         (raystructure.intersection_.x + 
-          (scene.lights_[i].position_ - raystructure.intersection_).x*0.001),
+          (raystructure.normal_ - raystructure.intersection_).x * 0.000001),
         (raystructure.intersection_.y + 
-          (scene.lights_[i].position_ - raystructure.intersection_).y*0.001),
+          (raystructure.normal_ - raystructure.intersection_).y * 0.000001),
         (raystructure.intersection_.z + 
-          (scene.lights_[i].position_ - raystructure.intersection_).z*0.001)};
+          (raystructure.normal_ - raystructure.intersection_).z * 0.000001)};
 
       Ray light_ray = {light_orig,
-        (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
+        (scene.lights_[i].position_ - raystructure.intersection_)}; 
 
+      bool in_shadow = false;
+      in_shadow = scene.composite_ptr_->intersect(light_ray);         
+      Raystructure shadow_point = scene.composite_ptr_->raystruct_intersect(light_ray);
+      if (shadow_point.is_hit_ != in_shadow) {
+				std::cout << "EROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR" << in_shadow << std::endl;       
+      }
+      if (true == shadow_point.is_hit_) {
+			  shadow_factor = 0;
+			}
+      std::cout << "What kind of Shadow?" << in_shadow << std::endl;       
+      std::cout << "Intersektion (" << raystructure.intersection_.x << ", " << raystructure.intersection_.y << ", " << raystructure.intersection_.z << ") " << std::endl;
+      std::cout << "Lichtstart (" << light_orig.x << ", " << light_orig.y << ", " << light_orig.z << ") " << std::endl;
+      std::cout << "Lichtstrecke (" << light_orig.x << ", " << light_orig.y << ", " << light_orig.z << ") " << std::endl;
+
+      std::cout << "Shadowpoint (" << shadow_point.intersection_.x << ", " << shadow_point.intersection_.y << ", " << shadow_point.intersection_.z << ") " << std::endl;
+      std::cout << "Distance (" << shadow_point.distance_ << ", " << shadow_point.distance_ << ", " << shadow_point.distance_ << ") " << std::endl;
+      
+      
       glm::vec3 normal = raystructure.normal_;
       glm::normalize(normal);
       
       float dotProd_dif = glm::dot(light_ray.direction, normal);
  
-      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif*material.color_kd().r;
-      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif*material.color_kd().g;
-      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif*material.color_kd().b;
+      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif*material.color_kd().r * shadow_factor;
+      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif*material.color_kd().g * shadow_factor;
+      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif*material.color_kd().b * shadow_factor;
    
       diffuse.r = std::fmax(0.0, std::fmin(1.0, diffuse.r));
       diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
@@ -192,9 +213,9 @@ Color Renderer::shade (
       std::cout << "DOTProductTemp: " << dot_temp << std::endl;
       */
       
-      specular.r += scene.lights_[i].intensity_dif_.r * material.color_ks().r * pow(dotProd_spec, material.m());
-      specular.g += scene.lights_[i].intensity_dif_.g * material.color_ks().g * pow(dotProd_spec, material.m());
-      specular.b += scene.lights_[i].intensity_dif_.b * material.color_ks().b * pow(dotProd_spec, material.m());
+      specular.r += scene.lights_[i].intensity_dif_.r * material.color_ks().r * pow(dotProd_spec, material.m()) * shadow_factor;
+      specular.g += scene.lights_[i].intensity_dif_.g * material.color_ks().g * pow(dotProd_spec, material.m()) * shadow_factor;
+      specular.b += scene.lights_[i].intensity_dif_.b * material.color_ks().b * pow(dotProd_spec, material.m()) * shadow_factor;
 
       specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
       specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));

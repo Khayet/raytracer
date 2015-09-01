@@ -252,14 +252,14 @@ Scene SDFloader::load(std::string const& filename) {
 			if(curr_word== "#"){
 			}						
 		}	
-	  std::cout << "Materialmenge: " << materials_.size();
+/*	  std::cout << "Materialmenge: " << materials_.size();
 	  for (auto map : materials_){ 
 	    std::cout << map.second << std::endl;
 	  	  std::cout << "Shapes: " << shapes_.size();
 	  }
 	  for (auto it : shapes_){ 
 	    std::cout << "Name: " << it->name() << "      Material: " << it->material() << std::endl;
-    }	
+    }*/	
   }
   
 	if (read_camera) {
