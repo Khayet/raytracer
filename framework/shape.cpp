@@ -1,5 +1,5 @@
 #include "shape.hpp"
-
+//
 Shape::Shape() : material_{Material{}}, name_{} {
   std::cout << "ctor Shape ()" << "\n";
 }

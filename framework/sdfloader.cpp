@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <map>
-
+//
 Scene SDFloader::load(std::string const& filename) {
   //std::ifstream file{"/home/moka3156/Dokumente/raytracer/framework/res/material_data.sdf"};
   std::ifstream file{filename};

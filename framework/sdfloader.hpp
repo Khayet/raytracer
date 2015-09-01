@@ -1,6 +1,6 @@
 #ifndef SDFloader_HPP
 #define SDFloader_HPP
-
+//
 #include "box.hpp"
 #include "composite.hpp"
 #include "material.hpp"

@@ -1,6 +1,6 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
-
+//
 #include "color.hpp"
 
 #include <string>

@@ -6,7 +6,7 @@
 #include "shape.hpp"
 
 class Box: public Shape {
-
+//
 public:
   Box();
   Box(glm::vec3 const& min, glm::vec3 const& max);

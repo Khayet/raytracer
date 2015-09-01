@@ -1,6 +1,6 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
-
+//
 #include <string>
 #include "color.hpp"
 

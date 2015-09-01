@@ -1,6 +1,6 @@
 #ifndef BUW_RAYSTRUCTURE_HPP
 #define BUW_RAYSTRUCTURE_HPP
-
+//
 
 #include "color.hpp"
 #include "material.hpp"

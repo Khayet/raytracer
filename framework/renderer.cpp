@@ -50,7 +50,7 @@ void Renderer::render() {
   }
   ppm_.save(filename_);
 }
-
+//
 void Renderer::render(Scene const& scene) {
   int ray_depth = 3;                      //Tiefe der Strahlen
   for (unsigned y = 0; y < height_; ++y) {
