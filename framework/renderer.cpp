@@ -60,25 +60,26 @@ void Renderer::render(Scene const& scene) {
 			Ray pixel_ray = shootRay(x, y, scene);
 
       bool pixel_drawn = false;
-      for(auto it : scene.shapes_) {
-				bool test = false;
-
-        test = it->intersect(pixel_ray, distance);
+      Raystructure intersect_struct 
+                = scene.composite_ptr_->raystruct_intersect(pixel_ray);
+			
         //std::cout << x << ", " << y << std::endl;
         
-        if (test && distance > 0 && min_distance > distance) {          
+      if (intersect_struct.distance_ > 0 && 
+          min_distance > intersect_struct.distance_) {          
+							
           pixel_drawn = true;
           min_distance = distance;
-          Raystructure intersec_struct(pixel_ray.origin, pixel_ray.direction, 
-            (*it).material().color_ka(),(*it).material(), distance, ray_depth);
           //std::cout<<"DOES INTERSECT "<< std::endl;
 					Pixel p(x,y);
-          p.color = shade(it, scene, (*it).material(), intersec_struct);
+          p.color = shade(scene, intersect_struct.material_, intersect_struct);
 					write(p);
 				} else {
           if (false == pixel_drawn) {
 						//std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
-            //std::cout<<"NO " << std::endl;
+						std::cout << intersect_struct.distance_ <<  std::endl;
+
+            std::cout<<"NO " << std::endl;
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -86,7 +87,7 @@ void Renderer::render(Scene const& scene) {
 			  }
 		  }
     }
-  }
+    std::cout << "GROESSE: " << scene.materials_.size();
   ppm_.save(filename_);
 }
 
@@ -106,7 +107,6 @@ void Renderer::write(Pixel const& p) {
 }
 
 Color Renderer::shade (
-  std::shared_ptr<Shape> const& shape_ptr, 
   Scene const& scene, 
   Material const& material, 
   Raystructure const& raystructure) {
@@ -147,7 +147,7 @@ Color Renderer::shade (
       Ray light_ray = {light_orig,
         (glm::normalize(scene.lights_[i].position_ - raystructure.intersection_))}; 
 
-      glm::vec3 normal = shape_ptr->intersect_normal(raystructure);
+      glm::vec3 normal = raystructure.normal_;
       glm::normalize(normal);
       
       float dotProd_dif = glm::dot(light_ray.direction, normal);
@@ -218,7 +218,7 @@ Color Renderer::shade (
 
 Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
   glm::vec3 position = scene.camera_.position();
-  glm::vec3 dir = glm::normalize(scene.camera_.direction());
+  glm::vec3 direction = glm::normalize(scene.camera_.direction());
   glm::vec3 up = glm::normalize(scene.camera_.up());
   double fov_hor = scene.camera_.horFOV() * (M_PI/180); //radians!
   double ratio = static_cast<double>(width_)
@@ -227,25 +227,28 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
                     /static_cast<double>(width_);
   double fov_ver = ratio * fov_hor; //radians!
 
-  //cross product of dir and up: 
-  glm::vec3 right = 
-   { (dir.y*up.z - dir.z*up.y),
-      (dir.z*up.x - dir.x*up.z),
-      (dir.x*up.y - dir.y*up.z)
-   };
+  /*glm::vec3 cam_v = {
+    direction.y * up.z - up.y * direction.z,
+    direction.z * up.x - up.z * direction.x,
+    direction.x * up.y - up.y * direction.x,
+    };
+  up = {
+    cam_v.y * direction.z - direction.y * cam_v.z,
+    cam_v.z * direction.x - direction.z * cam_v.x,
+    cam_v.x * direction.y - direction.y * cam_v.x,
+    };
+    */
   
-  glm::normalize(right);
-
   float dist = 0.5 / std::tan(0.5*fov_hor);
-  glm::vec3 dist_vec = dir * dist;
+  glm::vec3 dist_vec = direction * dist;
   /*
   std::cout << "dist_vec = " << "(" << dist_vec.x << ", "
             << dist_vec.y << ", " 
             << dist_vec.z << ")\n";
   */
-  float x_pos = static_cast<float>(x) / static_cast<float>(width_) -0.5;
-  float y_pos = ratio_inv * (static_cast<float>(y) / static_cast<float>(height_)) -0.5;
-  glm::vec3 pos_on_plane = right*x_pos + up*y_pos;
+  double x_pos = static_cast<double>(x) / static_cast<double>(width_);
+  double y_pos = ratio_inv * (static_cast<double>(y) / static_cast<double>(height_));
+  glm::vec3 pos_on_plane{ x_pos-0.5, y_pos-0.5, 0.0 };
   
   /*
   std::cout << "pos_on_plane = " << "(" << pos_on_plane.x << ", "

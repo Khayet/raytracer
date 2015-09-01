@@ -8,6 +8,6 @@ define shape sphere right_front -3 0 -8 1 red
 #define light sun 0 0 100 1 1 1 0 0 0
 define light lamp 0 0 -7 .2 .2 .2 .4 .4 .4
 # camera 
-define camera eye 90.0 0 0 0 0 0 -1 1 1 0
+define camera eye 90.0 0 0 0 0 0 -1 0 1 0
 # ... and go
 render eye testScene3.ppm 600 600 
