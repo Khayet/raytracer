@@ -36,8 +36,10 @@ public:
     Ray const& ray, 
     float& dist, 
     std::shared_ptr<Shape> & ptr) const;
-  glm::vec3 intersect_normal(Raystructure const& raystructure) const;
+  glm::vec3 intersect_normal(Ray const& ray) const;
   std::unordered_map<std::string ,std::shared_ptr<Shape>> get_children();
+  Raystructure raystruct_intersect(Ray const& r) const;
+  
   void add(std::shared_ptr<Shape> const& shared_shape);
   void remove(std::string const& shape);
   

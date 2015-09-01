@@ -11,6 +11,8 @@
 #include "material.hpp"
 #include "ray.hpp"
 #include "raystructure.hpp"
+
+#include <limits>
 #include <memory>
 
 class Shape {
@@ -33,7 +35,9 @@ public:
     Ray const& ray, 
     float& dist, 
     std::shared_ptr<Shape> & ptr) const = 0;
-	virtual glm::vec3 intersect_normal(Raystructure const& raystructure) const = 0;
+	virtual glm::vec3 intersect_normal(Ray const& ray) const = 0;
+  virtual Raystructure raystruct_intersect(Ray const& r) const = 0;
+
 private:
   Material material_;
   std::string name_;

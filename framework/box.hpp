@@ -28,7 +28,8 @@ public:
     Ray const& ray, 
     float& dist, 
     std::shared_ptr<Shape> & ptr) const;
-  glm::vec3 intersect_normal(Raystructure const& raystructure) const;
+  glm::vec3 intersect_normal(Ray const& ray) const;
+  Raystructure raystruct_intersect(Ray const& r) const;
   
 private:
   glm::vec3 min_;

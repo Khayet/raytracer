@@ -30,7 +30,7 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
 }
 
 /* virtual */ std::ostream& Box::print(std::ostream& os) const {
-  os << "\n";
+/*  os << "\n";
   os << "Box \"" << name() << "\" : \n";
   os << "  name    :  " << name() << "\n";
   os << "  material   :  " << material();
@@ -43,7 +43,7 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
       
   os << "  area    :  " << area() << "\n";
   os << "  volume  :  " << volume() << "\n";
-
+*/
   return os;
 }
 
@@ -106,59 +106,58 @@ bool Box::intersect(Ray const& r, float& dist) const {
   return true;
 }
 
-glm::vec3 Box::intersect_normal(Raystructure const& raystructure) const{
-//  std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y << 
-//  raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x << 
-//  raystructure.direction_.y<< raystructure.direction_.z << " "<< std::endl;
+glm::vec3 Box::intersect_normal(Ray const& ray) const{
+//	std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y << 
+//	raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x << 
+//	raystructure.direction_.y<< raystructure.direction_.z << " "<< std::endl;
+  float distance_inters = 0;
+  bool intersect_test = intersect(ray, distance_inters);
+  glm::vec3 intersection = {(distance_inters * ray.direction.x),(distance_inters * ray.direction.y),(distance_inters * ray.direction.z)};
   glm::vec3 center = {((min_.x + max_.x)/2),((min_.y + max_.y)/2),((min_.z + max_.z)/2)};
   glm::vec3 normal = {0.0, 0.0, 0.0};
   float min_distance = std::numeric_limits<float>::max();
-  float epsilon = 400*min_distance;
 
-  glm::vec3 hit = raystructure.intersection_;
-  float diff = 0.0;
-  diff = hit.x - min_.x;
-  if (diff < epsilon) normal = {-1.0, 0.0, 0.0};
-  diff = hit.x - max_.x;
-  if (diff < epsilon) normal = {1.0, 0.0, 0.0};
-  diff = hit.x - max_.x;
-  if (diff < epsilon) normal = {0.0, -1.0, 0.0};
-  diff = hit.x - max_.x;
-  if (diff < epsilon) normal = {0.0, 1.0, 0.0};
-  diff = hit.x - max_.x;
-  if (diff < epsilon) normal = {0.0, 0.0, 1.0};
-  diff = hit.x - max_.x;
-  if (diff < epsilon) normal = {0.0, 0.0, -1.0};
-
-/*  glm::vec3 temp = center; //Statt temp intersection point
+  glm::vec3 temp = intersection- center; //Statt temp intersection point
   float distance = std::abs(max_.x - std::abs(temp.x));
   if (distance < min_distance) {
-    min_distance = distance;
-    if ( 0 != temp.x){
-      normal = {(1 * (temp.x/(std::abs(temp.x)))), 0, 0 };
-    } else {
-      normal = {1, 0, 0 };
-    }
+		min_distance = distance;
+		if ( 0 != temp.x){
+		  normal = {(1 * (temp.x/(std::abs(temp.x)))), 0, 0 };
+		} else {
+			normal = {1, 0, 0 };
+		}
   }
   distance = std::abs(max_.y - std::abs(temp.y));
   if (distance < min_distance) {
-    min_distance = distance;
+		min_distance = distance;
     if ( 0 != temp.y){
-      normal = {0, (1 * (temp.y/(std::abs(temp.y)))), 0 };
-    } else {
-      normal = {0, 1, 0 };
-    }
-  }
+	    normal = {0, (1 * (temp.y/(std::abs(temp.y)))), 0 };
+		} else {
+			normal = {0, 1, 0 };
+		}
+	}
   distance = std::abs(max_.z - std::abs(temp.z));
   if (distance < min_distance) {
-    min_distance = distance;
+		min_distance = distance;
     if ( 0 != temp.z){
-      normal = {0, 0, (1 * (temp.z/(std::abs(temp.z))))};   
-    } else {
-      normal = {0, 0, 1 };
-    }
+      normal = {0, 0, (1 * (temp.z/(std::abs(temp.z))))};		
+		} else {
+			normal = {0, 0, 1 };
+		}
   }
   normal = glm::normalize(normal);
-*/
   return normal;
+}
+
+Raystructure Box::raystruct_intersect(Ray const& r) const {
+  bool intersect_test =false;
+  float distance = 0;
+  intersect_test = intersect(r, distance);
+  if (true == intersect_test){
+    return Raystructure{r.origin, r.direction, Color{0,0,0}, 
+		                  material(), distance,	intersect_normal(r)};
+	}
+	return Raystructure{r.origin, r.direction, Color{0,0,0}, 
+		                  material(), std::numeric_limits<float>::max(),	
+		                  glm::vec3{0, 0, 0}};
 }

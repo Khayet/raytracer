@@ -18,14 +18,14 @@ public:
       direction_{direction}, up_{up} {}
     
   std::string name() const {
-    return name_;
+		return name_;
   }  
   double horFOV() const { 
     return horFOV_;
   }
-  glm::vec3 position() const {
-    return position_;
-  }
+	glm::vec3 position() const {
+	  return position_;
+	}
   glm::vec3 direction() const { 
     return direction_;
   }

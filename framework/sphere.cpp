@@ -62,9 +62,27 @@ bool Sphere::intersect(Ray const& ray, float& dist) const {
   //return result;
 }
 
-glm::vec3 Sphere::intersect_normal(Raystructure const& raystructure) const{
-  glm::vec3 intersection = raystructure.intersection_;  
+glm::vec3 Sphere::intersect_normal(Ray const& ray) const{
+	float distance = 0;
+	glm::vec3 temp = glm::normalize(ray.direction);
+	bool intersect_test = intersect(ray, distance);
+  glm::vec3 intersection ={ray.origin +glm::vec3{(distance * temp.x),
+		(distance * temp.y),
+		(distance * temp.z)}};  
   glm::vec3 normal = (intersection - center_);
   normal = glm::normalize(normal);
   return normal;
+}
+
+Raystructure Sphere::raystruct_intersect(Ray const& r) const {
+  bool intersect_test = false;
+  float distance = 0;
+  intersect_test = intersect(r, distance);
+  if (true == intersect_test){
+    return Raystructure{r.origin, r.direction, Color{0,0,0}, 
+		                  material(), distance,	intersect_normal(r)};
+	}
+	return Raystructure{r.origin, r.direction, Color{0,0,0}, 
+		                  material(), std::numeric_limits<float>::max(),	
+		                  glm::vec3{0, 0, 0}};
 }
