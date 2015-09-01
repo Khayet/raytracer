@@ -11,7 +11,7 @@ struct Ray
 {
 	Ray(glm::vec3 orig,glm::vec3 direct): origin{orig}, direction{direct}{}
   
-  Ray_T transform(glm::mat4 const& matrix) {
+  Ray_T transform(glm::mat4 const& matrix) const {
     Ray_T r{ glm::vec4(origin, 1), glm::vec4(direction,0) };
 
     r.origin = r.origin * matrix;

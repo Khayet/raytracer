@@ -185,23 +185,7 @@ TEST_CASE("ŕay_transform", "[transform]") {
   REQUIRE(ray.origin.x == Approx(2.0));
 }
 
-/*
-TEST_CASE("box_translate", "[translate]") {
-  Box b{ {1.0,1.0,1.0}, {2.0,2.0,2.0} };
-  glm::vec3 tran{1.0,0.0,0.0};
 
-  b.translate(tran);
-  REQUIRE(b.min().x == Approx(2.0));
-}
-
-TEST_CASE("sphere_translate", "[translate]") {
-  Sphere sph{ {1.0,1.0,1.0}, 2.0};
-  glm::vec3 tran{1.0,1.0,1.0};
-
-  sph.translate(tran);
-  REQUIRE(sph.center().z == Approx(2.0));
-}
-*/
 int main(int argc, char *argv[])
 {
   return Catch::Session().run(argc, argv);
