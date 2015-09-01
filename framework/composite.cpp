@@ -178,3 +178,9 @@ Raystructure Composite::raystruct_intersect(Ray const& r) const {
 	//std::cout << std::endl <<  correct_candidate.material_ << std::endl;
 	return correct_candidate;
 }
+
+void Composite::translate(glm::vec3 const& t_vec3) {
+  for (auto it : children_) {
+    it.second->translate(t_vec3);
+  }
+}

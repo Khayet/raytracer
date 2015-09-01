@@ -7,6 +7,7 @@
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/intersect.hpp>
+#include <glm/mat4x4.hpp>
 #include "color.hpp"
 #include "material.hpp"
 #include "ray.hpp"
@@ -25,6 +26,13 @@ public:
 
   Material material() const;
   std::string name() const;
+  glm::mat4 world_transformation() const { return world_transformation_; }
+  glm::mat4 world_transformation_inv() const { return world_transformation_inv_; }
+
+  glm::mat4 set_matrix(glm::mat4 const& mat) { 
+    world_transformation_ = mat;
+    world_transformation_inv_ = glm::inverse(mat);
+  }
 
   virtual double area() const = 0;
   virtual double volume() const = 0;
@@ -38,11 +46,12 @@ public:
 	virtual glm::vec3 intersect_normal(Ray const& ray) const = 0;
   virtual Raystructure raystruct_intersect(Ray const& r) const = 0;
 
-/*  virtual void translate(glm::vec3 const&) = 0;
-  virtual void scale(double) = 0;
+  virtual void translate(glm::vec3 const&) = 0;
+/*  virtual void scale(double) = 0;
   virtual void rotate(double, double, double) = 0;
   virtual void rotate(glm::vec3 const&) = 0;
 */
+
 private:
   Material material_;
   std::string name_;

@@ -31,6 +31,8 @@ public:
   glm::vec3 intersect_normal(Ray const& ray) const;
   Raystructure raystruct_intersect(Ray const& r) const;
   
+  void translate(glm::vec3 const&);
+
 private:
   glm::vec3 center_;
   double radius_;

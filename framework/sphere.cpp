@@ -87,3 +87,10 @@ Raystructure Sphere::raystruct_intersect(Ray const& r) const {
 		                  material(), std::numeric_limits<float>::max(),	
 		                  glm::vec3{0, 0, 0}, intersect_test};
 }
+
+void Sphere::translate(glm::vec3 const& t_vec) {
+  glm::mat4 t_mat{1.0};
+  t_mat[3] = glm::vec4(t_vec, 1); //create correct transformation matrix
+
+  set_matrix(t_mat);
+}

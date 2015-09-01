@@ -153,17 +153,9 @@ Raystructure Box::raystruct_intersect(Ray const& r) const {
 }
 
 void Box::translate(glm::vec3 const& t_vec) {
-  //point => 1, vector => 0
-  glm::vec4 min_T(min_, 1);
-  glm::vec4 max_T(max_, 1);
-
   glm::mat4 t_mat{1.0};
   t_mat[3] = glm::vec4(t_vec, 1); //create correct transformation matrix
 
-  min_T = t_mat * min_T; //!! order is important !! 
-  max_T = t_mat * max_T;
-
-  min_ = glm::vec3(min_T);
-  max_ = glm::vec3(max_T);
+  set_matrix(t_mat);
 }
 

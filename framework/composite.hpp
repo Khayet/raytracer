@@ -43,6 +43,8 @@ public:
   void add(std::shared_ptr<Shape> const& shared_shape);
   void remove(std::string const& shape);
 
+  void translate(glm::vec3 const&) override;
+
 private:
   std::unordered_map<std::string, std::shared_ptr<Shape>> children_;
   std::vector<std::shared_ptr<Shape>> shapes_;
