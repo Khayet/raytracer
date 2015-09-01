@@ -115,6 +115,8 @@ glm::vec3 Box::intersect_normal(Raystructure const& raystructure) const{
   float min_distance = std::numeric_limits<float>::max();
   float epsilon = 400*min_distance;
 
+  //DONT DO DRUGS AND GIT
+
   glm::vec3 hit = raystructure.intersection_;
   float diff = 0.0;
   diff = hit.x - min_.x;
