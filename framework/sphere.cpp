@@ -1,5 +1,5 @@
 #include "sphere.hpp"
-
+//
 Sphere::Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {
   std::cout << "ctor sphere ()" << "\n";
   }  

@@ -1,6 +1,6 @@
 #ifndef COMPOSITE_HPP
 #define COMPOSITE_HPP
-
+//
 #include "shape.hpp"
 #include "raystructure.hpp"
 #include <memory>

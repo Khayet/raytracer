@@ -1,5 +1,5 @@
 #include "material.hpp"
-
+//
 		Material::Material(Color ka, Color  kd, Color ks) 
 		: name_{}, ka_{ka}, kd_{kd}, ks_{ks}, m_{0} {
 		}

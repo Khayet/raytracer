@@ -117,34 +117,25 @@ glm::vec3 Box::intersect_normal(Ray const& ray) const{
   glm::vec3 normal = {0.0, 0.0, 0.0};
   float min_distance = std::numeric_limits<float>::max();
 
-  glm::vec3 temp = intersection- center; //Statt temp intersection point
-  float distance = std::abs(max_.x - std::abs(temp.x));
-  if (distance < min_distance) {
-		min_distance = distance;
-		if ( 0 != temp.x){
-		  normal = {(1 * (temp.x/(std::abs(temp.x)))), 0, 0 };
-		} else {
-			normal = {1, 0, 0 };
-		}
-  }
-  distance = std::abs(max_.y - std::abs(temp.y));
-  if (distance < min_distance) {
-		min_distance = distance;
-    if ( 0 != temp.y){
-	    normal = {0, (1 * (temp.y/(std::abs(temp.y)))), 0 };
-		} else {
-			normal = {0, 1, 0 };
-		}
-	}
-  distance = std::abs(max_.z - std::abs(temp.z));
-  if (distance < min_distance) {
-		min_distance = distance;
-    if ( 0 != temp.z){
-      normal = {0, 0, (1 * (temp.z/(std::abs(temp.z))))};		
-		} else {
-			normal = {0, 0, 1 };
-		}
-  }
+  float epsilon = 400*min_distance;
+
+  //DONT DO DRUGS AND GIT
+
+  glm::vec3 hit = intersection;
+  float diff = 0.0;
+  diff = hit.x - min_.x;
+  if (diff < epsilon) normal = {-1.0, 0.0, 0.0};
+  diff = hit.x - max_.x;
+  if (diff < epsilon) normal = {1.0, 0.0, 0.0};
+  diff = hit.x - max_.x;
+  if (diff < epsilon) normal = {0.0, -1.0, 0.0};
+  diff = hit.x - max_.x;
+  if (diff < epsilon) normal = {0.0, 1.0, 0.0};
+  diff = hit.x - max_.x;
+  if (diff < epsilon) normal = {0.0, 0.0, 1.0};
+  diff = hit.x - max_.x;
+  if (diff < epsilon) normal = {0.0, 0.0, -1.0};
+
   normal = glm::normalize(normal);
   return normal;
 }

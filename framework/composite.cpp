@@ -1,5 +1,5 @@
 #include "../framework/composite.hpp"
-
+//
 
 Composite::Composite() : Shape{}  {std::cout << "ctor Composite ()" << name() << "\n"; }
 Composite::Composite(std::unordered_map<std::string, std::shared_ptr<Shape>> shapes) 

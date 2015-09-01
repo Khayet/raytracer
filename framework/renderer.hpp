@@ -41,8 +41,7 @@ public:
   }
 	unsigned width();
 	unsigned height();
-	
-	
+
 private:
   unsigned width_;
   unsigned height_;
