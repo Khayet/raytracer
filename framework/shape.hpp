@@ -37,8 +37,8 @@ public:
     std::shared_ptr<Shape> & ptr) const = 0;
 	virtual glm::vec3 intersect_normal(Ray const& ray) const = 0;
   virtual Raystructure raystruct_intersect(Ray const& r) const = 0;
-/*
-  virtual void translate(glm::vec3 const&) = 0;
+
+/*  virtual void translate(glm::vec3 const&) = 0;
   virtual void scale(double) = 0;
   virtual void rotate(double, double, double) = 0;
   virtual void rotate(glm::vec3 const&) = 0;

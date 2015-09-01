@@ -176,13 +176,21 @@ TEST_CASE("ŕay_transform", "[transform]") {
   glm::mat4 mat{2.0};
   Ray_T r{ray.transform(mat)};
 
-  REQUIRE(4.0 == r.origin[0]);
+  REQUIRE(Approx(4.0) == r.origin[0]);
 
   mat = glm::inverse(mat);
 
   r.transform(mat);
   ray = {glm::vec3(r.origin), glm::vec3(r.direction)};
-  REQUIRE(ray.origin.x == 2.0);
+  REQUIRE(ray.origin.x == Approx(2.0));
+}
+
+TEST_CASE("box_translate", "[translate]") {
+  Box b{ {1.0,1.0,1.0}, {2.0,2.0,2.0} };
+  glm::vec3 tran{1.0,0.0,0.0};
+
+  b.translate(tran);
+  REQUIRE(b.min().x == Approx(2.0));
 }
 
 int main(int argc, char *argv[])
