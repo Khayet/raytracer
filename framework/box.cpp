@@ -117,9 +117,8 @@ glm::vec3 Box::intersect_normal(Ray const& ray) const{
   glm::vec3 normal = {0.0, 0.0, 0.0};
   float min_distance = std::numeric_limits<float>::max();
 
-  float epsilon = 400*min_distance;
 
-  //DONT DO DRUGS AND GIT
+  float epsilon = 400*min_distance; //arbitrary small number
 
   glm::vec3 hit = intersection;
   float diff = 0.0;
@@ -127,13 +126,13 @@ glm::vec3 Box::intersect_normal(Ray const& ray) const{
   if (diff < epsilon) normal = {-1.0, 0.0, 0.0};
   diff = hit.x - max_.x;
   if (diff < epsilon) normal = {1.0, 0.0, 0.0};
-  diff = hit.x - max_.x;
+  diff = hit.x - min_.y;
   if (diff < epsilon) normal = {0.0, -1.0, 0.0};
-  diff = hit.x - max_.x;
+  diff = hit.x - max_.y;
   if (diff < epsilon) normal = {0.0, 1.0, 0.0};
-  diff = hit.x - max_.x;
+  diff = hit.x - min_.z;
   if (diff < epsilon) normal = {0.0, 0.0, 1.0};
-  diff = hit.x - max_.x;
+  diff = hit.x - max_.z;
   if (diff < epsilon) normal = {0.0, 0.0, -1.0};
 
   normal = glm::normalize(normal);
