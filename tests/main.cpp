@@ -165,7 +165,7 @@ TEST_CASE("Renderer", "[render]") {
   Composite charl; // Kompositiontest
 
   SDFloader loader;
-  std::string filepath = "../framework/res/test_scene_3.sdf";
+  std::string filepath = "../framework/res/test_scene_2.sdf";
   Scene loaded(loader.load(filepath));
   charl.print(std::cout);
 }

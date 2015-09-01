@@ -227,7 +227,7 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
                     /static_cast<double>(width_);
   double fov_ver = ratio * fov_hor; //radians!
 
-  //cross product of dir and up
+  //cross product of dir and up: 
   glm::vec3 right = 
    { (dir.y*up.z - dir.z*up.y),
       (dir.z*up.x - dir.x*up.z),
