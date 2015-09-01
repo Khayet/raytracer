@@ -218,7 +218,7 @@ Color Renderer::shade (
 
 Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
   glm::vec3 position = scene.camera_.position();
-  glm::vec3 direction = glm::normalize(scene.camera_.direction());
+  glm::vec3 dir = glm::normalize(scene.camera_.direction());
   glm::vec3 up = glm::normalize(scene.camera_.up());
   double fov_hor = scene.camera_.horFOV() * (M_PI/180); //radians!
   double ratio = static_cast<double>(width_)
@@ -227,28 +227,25 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
                     /static_cast<double>(width_);
   double fov_ver = ratio * fov_hor; //radians!
 
-  /*glm::vec3 cam_v = {
-    direction.y * up.z - up.y * direction.z,
-    direction.z * up.x - up.z * direction.x,
-    direction.x * up.y - up.y * direction.x,
-    };
-  up = {
-    cam_v.y * direction.z - direction.y * cam_v.z,
-    cam_v.z * direction.x - direction.z * cam_v.x,
-    cam_v.x * direction.y - direction.y * cam_v.x,
-    };
-    */
+  //cross product of dir and up
+  glm::vec3 right = 
+   { (dir.y*up.z - dir.z*up.y),
+      (dir.z*up.x - dir.x*up.z),
+      (dir.x*up.y - dir.y*up.z)
+   };
   
+  glm::normalize(right);
+
   float dist = 0.5 / std::tan(0.5*fov_hor);
-  glm::vec3 dist_vec = direction * dist;
+  glm::vec3 dist_vec = dir * dist;
   /*
   std::cout << "dist_vec = " << "(" << dist_vec.x << ", "
             << dist_vec.y << ", " 
             << dist_vec.z << ")\n";
   */
-  double x_pos = static_cast<double>(x) / static_cast<double>(width_);
-  double y_pos = ratio_inv * (static_cast<double>(y) / static_cast<double>(height_));
-  glm::vec3 pos_on_plane{ x_pos-0.5, y_pos-0.5, 0.0 };
+  float x_pos = static_cast<float>(x) / static_cast<float>(width_) -0.5;
+  float y_pos = ratio_inv * (static_cast<float>(y) / static_cast<float>(height_)) -0.5;
+  glm::vec3 pos_on_plane = right*x_pos + up*y_pos;
   
   /*
   std::cout << "pos_on_plane = " << "(" << pos_on_plane.x << ", "
