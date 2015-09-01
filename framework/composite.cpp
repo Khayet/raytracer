@@ -54,7 +54,7 @@ bool Composite::intersect(Ray const& ray, float& dist) const{
 		  test_sect = true;
 		  min_distance = distance;
 		  correct_candidate = struct_candidate;
-		std::cout <<"Name "<< (*it.second)<< std::endl;
+	//	std::cout <<"Name "<< (*it.second)<< std::endl;
 		}
 	}
 	return test_sect;
@@ -119,7 +119,7 @@ bool Composite::intersect_ptr(Ray const& ray, float& dist, std::shared_ptr<Shape
 		  exist_sect = true;
 		  min_distance = distance;
 		  correct_child = ptr->name();
-		std::cout <<"Name "<< (*it.second)<< std::endl;
+		std::cout <<"Name #################################################################################################################################################"<< (it.second)<< std::endl;
 		}
 	}
 	if(exist_sect) {
