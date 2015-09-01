@@ -34,15 +34,15 @@ public:
   void render(Scene const& render_scene);
   void write(Pixel const& p);
   Ray shootRay(int x, int y, Scene const& render_scene);
-  Color shade(Scene const& scene, Material const& material, Raystructure const& raystructure_);  
+  Color shade(std::shared_ptr<Shape> const& shape_ptr, Scene const& scene, Material const& material, Raystructure const& raystructure_);  
   inline std::vector<Color> const& colorbuffer() const
   {
     return colorbuffer_;
   }
-	unsigned width();
-	unsigned height();
-	
-	
+  unsigned width();
+  unsigned height();
+  
+  
 private:
   unsigned width_;
   unsigned height_;

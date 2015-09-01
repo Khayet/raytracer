@@ -3,11 +3,11 @@ define material blue 0 0 1 0 0 1 0 0 1 1
 define material green 0 1 0 0 1 0 0 1 0 1 
 define material yellow 1 1 0 1 1 0 1 1 0 1 
 define shape box rbottom -100 -80 -200 100 80 -100 red
-define shape sphere bsphere 0 0 -100 50 yellow
-define shape sphere blauerHase 3 3 3 5 blue
-define shape sphere roterHase 3 3 3 5 red
-define shape sphere roterHase 4 5 -5 1.7 red
-define shape sphere roterHase 0 0 -5 2.2 green
+#define shape sphere bsphere 0 0 -100 50 yellow
+#define shape sphere blauerHase 3 3 3 5 blue
+#define shape sphere roterHase 3 3 3 5 red
+#define shape sphere roterHase 4 5 -5 1.7 red
+#define shape sphere roterHase 0 0 -5 2.2 green
 # light
 define light sun 1000 700 0 .2 .2 .2 .8 .8 .8
 # camera 

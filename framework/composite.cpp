@@ -1,21 +1,21 @@
 #include "../framework/composite.hpp"
 
 
-Composite::Composite() : Shape{}  {std::cout << "ctor Composite ()" << name() << "\n"; }
+Composite::Composite() : Shape{}  {}
 Composite::Composite(std::unordered_map<std::string, std::shared_ptr<Shape>> shapes) 
-  : Shape{}, children_{shapes} {std::cout << "ctor Composite ()" << name() << "\n"; }
+  : Shape{}, children_{shapes} {}
 Composite::Composite(Composite const& copy_composite) 
   : Shape{copy_composite.material(), copy_composite.name()}, 
-    children_{copy_composite.children_} {std::cout << "ctor Composite ()" << name() << "\n"; }
+    children_{copy_composite.children_} {}
 Composite::Composite(Material const& material, std::string const& n,
     std::unordered_map<std::string, std::shared_ptr<Shape>> shapes) 
-    :    Shape{material, n}, children_{shapes} {std::cout << "ctor Composite ()" << name() << "\n"; }
+    :    Shape{material, n}, children_{shapes} {}
 Composite::Composite(
     Material const& material, 
     std::string const& n,
     std::unordered_map<std::string, std::shared_ptr<Shape>> shapes,
     std::unordered_map<std::string, std::shared_ptr<Shape>> database)
-    :    Shape{material, n}, children_{shapes}, database_{database} {std::cout << "ctor Composite ()" << name() << "\n"; }
+    :    Shape{material, n}, children_{shapes}, database_{database} {}
 Composite::~Composite(){}
 
 /* virtual */ double Composite::area() const {
@@ -27,37 +27,32 @@ Composite::~Composite(){}
 }
 
 /* virtual */ std::ostream& Composite::print(std::ostream& os) const {
-/*  os << "\n";
+  os << "\n";
   os << "Composite \"" << name() << "\" : \n";
   os << "  name    :  " << name() << "\n";  
   os << "  children    :  ";
   for (auto const& it : children_) {
-	  os << " " << it.second->name() << "WHY";
+	  os << " " << it.second->name() << " ";
 	}
   os << "\n";
-  return os;*/
+  return os;
 }
 
 bool Composite::intersect(Ray const& ray) const{
 	float distance = 0.0;
-	return intersect(ray, distance);
+	bool intersect_test = false;
+	for (auto it : children_) {
+	  intersect_test = it.second->intersect(ray, distance);
+	}  
+	return intersect_test;
 }
 
 bool Composite::intersect(Ray const& ray, float& dist) const{
-  bool test_sect = false;
-	float min_distance = std::numeric_limits<float>::max();
-  float distance = 0;
-  Raystructure correct_candidate;
-	for (auto&& it : children_) {
-	  Raystructure struct_candidate = it.second->raystruct_intersect(ray);
-	  if (struct_candidate.distance_ < min_distance) {
-		  test_sect = true;
-		  min_distance = distance;
-		  correct_candidate = struct_candidate;
-		std::cout <<"Name "<< (*it.second)<< std::endl;
-		}
-	}
-	return test_sect;
+	bool intersect_test = false;
+	for (auto it : children_) {
+	  intersect_test = it.second->intersect(ray, dist);
+	}  
+	return intersect_test;
 }
 
 bool Composite::intersect(Ray const& ray, float& dist,std::shared_ptr<Shape> & ptr) const{
@@ -87,7 +82,7 @@ Raystructure Composite::intersect(Ray const& ray, float& dist, std::shared_ptr<S
 	float min_distance = std::numeric_limits<float>::max();
   float distance = 0;
 	std::string correct_child;
-	for (auto&& it : children_) {
+	for (auto it : children_) {
 	  intersect_test = false;
 	  intersect_test = it.second->intersect(ray, dist);
 	  if (distance <= min_distance && true == intersect_test) {
@@ -104,8 +99,8 @@ Raystructure Composite::intersect(Ray const& ray, float& dist, std::shared_ptr<S
 	 Raystructure intersect_struct(ray.origin, ray.direction, catched_object->mterial().color_ka(),catched_object->material(), distance, ray_depth);
 	std::cout << "       " ;
 	return intersect_struct;
-}
-*/
+}*/
+
 bool Composite::intersect_ptr(Ray const& ray, float& dist, std::shared_ptr<Shape> & ptr) const{
 	bool intersect_test = false;
   bool exist_sect = false;
@@ -134,11 +129,36 @@ bool Composite::intersect_ptr(Ray const& ray, float& dist, std::shared_ptr<Shape
 	return intersect_test;
 }
 
-glm::vec3 Composite::intersect_normal(Ray const& ray) const{	
-	Raystructure temp_struct = raystruct_intersect(ray);
-  glm::vec3 normal = temp_struct.normal_;
-  return normal;
-}
+
+	
+
+glm::vec3 Composite::intersect_normal(Raystructure const& raystructure) const{	
+  glm::vec3 normal = {0, 0, 0};
+	bool intersect_test = false;
+	Ray eyeray = {raystructure.origin_, raystructure.direction_};
+	float min_distance = std::numeric_limits<float>::max();
+  float distance = 0;
+  bool exist_sect = false;
+	std::string correct_child;
+	for (auto const& it : children_) {
+	  intersect_test = false;
+	  intersect_test = it.second->intersect(eyeray, distance);
+	  if (distance <= min_distance && true == intersect_test) {
+		  exist_sect = true;
+		  min_distance = distance;
+		  correct_child = it.second->name();
+		}
+	}
+	if(exist_sect) {
+    auto it = children_.find(correct_child);
+	  normal = it->second->intersect_normal(raystructure);
+	    std::cout << " Normal (" << normal.x << normal.y << 
+	normal.z<< ")  " << std::endl;
+	  return normal;
+	}
+  std::cout << "Error: No children available" << std::endl;
+  return {0.0, 0.0, 0.0};
+} 
 
 std::unordered_map<std::string ,std::shared_ptr<Shape>> Composite::get_children(){
 	return children_;
@@ -151,30 +171,4 @@ void Composite::add(std::shared_ptr<Shape> const& shape) {
 void Composite::remove(std::string const& shape) {
   std::unordered_map<std::string ,std::shared_ptr<Shape>>::iterator it = children_.find(shape);
   children_.erase(it);
-}
-
-Raystructure Composite::raystruct_intersect(Ray const& r) const {
-
-  bool exist_sect = false;
-	float min_distance = std::numeric_limits<float>::max();
-  min_distance = min_distance/2;
-  	std::cout <<"#####MINDISTANCE: " << min_distance<< std::endl;
-  float distance = 0;
-  Raystructure correct_candidate; 
-	for (auto&& it : children_) {
-	  Raystructure struct_candidate = it.second->raystruct_intersect(r);
-	  if (struct_candidate.distance_ < min_distance) {
-		  exist_sect = true;
-		  min_distance = distance;
-		  correct_candidate = struct_candidate;
-		}
-		if(exist_sect == false)
-		{
-			distance = std::numeric_limits<float>::max();
-		}
-		//std::cout <<"Name "<< (*it.second) << "Distance "<< struct_candidate.distance_<< std::endl;
-
-	}
-	//std::cout << std::endl <<  correct_candidate.material_ << std::endl;
-	return correct_candidate;
 }

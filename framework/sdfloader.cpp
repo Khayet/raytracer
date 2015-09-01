@@ -25,8 +25,9 @@ Scene SDFloader::load(std::string const& filename) {
 
   std::string composite_name;
   std::unordered_map<std::string,  std::shared_ptr<Shape>> composite_;
+  std::unordered_map<std::string, std::shared_ptr<Shape>> copy_temp;
   std::unordered_map<std::string, std::shared_ptr<Shape>> map_children;
-
+  std::vector<std::string> parsed_children;	
 
   std::vector<Light> lights_;
   if (!file) {
@@ -142,11 +143,9 @@ Scene SDFloader::load(std::string const& filename) {
 						std::cout <<"NUMBER OF ELEMENTS:" << shapes_.size() << std::endl;									
 					}
 					if (curr_word =="composite"){
-  						std::vector<std::string> parsed_children;
-            std::unordered_map<std::string, std::shared_ptr<Shape>> copy_temp;	
 						std::cout << " COMPOSITE " << std::endl; //TESTZEILE
 						test >> curr_word;
-						  std::cout<<"NAME des compy: " << curr_word << " " << std::endl;
+						  std::cout<<"NAme compy" << curr_word << " " << std::endl;
 						composite_name = curr_word;
 						std::string temp;
 						test >> temp;
@@ -154,7 +153,7 @@ Scene SDFloader::load(std::string const& filename) {
 						while (false == temp.empty() && temp != previous_string) {
 							previous_string = temp;
 							parsed_children.push_back(temp);	
-						  std::cout<<"Children: " << temp << " " << std::endl;
+						  std::cout<<"Children" << temp << " " << std::endl;
 						  test >> temp;  
 					  }
 					  std::string shape_name;
@@ -251,15 +250,7 @@ Scene SDFloader::load(std::string const& filename) {
 			}
 			if(curr_word== "#"){
 			}						
-		}	
-	  std::cout << "Materialmenge: " << materials_.size();
-	  for (auto map : materials_){ 
-	    std::cout << map.second << std::endl;
-	  	  std::cout << "Shapes: " << shapes_.size();
-	  }
-	  for (auto it : shapes_){ 
-	    std::cout << "Name: " << it->name() << "      Material: " << it->material() << std::endl;
-    }	
+		}		
   }
   
 	if (read_camera) {
