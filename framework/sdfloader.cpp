@@ -27,6 +27,9 @@ Scene SDFloader::load(std::string const& filename) {
   std::unordered_map<std::string,  std::shared_ptr<Shape>> composite_;
   std::unordered_map<std::string, std::shared_ptr<Shape>> map_children;
 
+  std::string transform_name;
+  std::string transform_kind;
+  unsigned trans_x, trans_y, trans_z;
 
   std::vector<Light> lights_;
   if (!file) {
@@ -226,6 +229,21 @@ Scene SDFloader::load(std::string const& filename) {
 				}
 			}
 
+			if (curr_word == "transform") {
+				//test >> curr_word;
+				test >> transform_name;
+				test >> transform_kind; 
+				test >> trans_x;
+				test >> trans_y;
+				test >> trans_z;
+
+				auto sh = map_children.find(transform_name);
+				if ("translate" == transform_kind) {
+					glm::vec3 v{trans_x, trans_y, trans_z};
+					sh->second->translate(v);
+				}
+			}			
+
 			if(curr_word == "render") {
 
 				//std::cout << " RENDER " << std::endl; //TESTZEILE
@@ -250,7 +268,9 @@ Scene SDFloader::load(std::string const& filename) {
 				rend.render(Scene(materials_, shapes_, lights_, shared_composite, cam));
 			}
 			if(curr_word== "#"){
-			}						
+			}		
+
+	
 		}	
 /*	  std::cout << "Materialmenge: " << materials_.size();
 	  for (auto map : materials_){ 
