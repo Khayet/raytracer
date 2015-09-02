@@ -60,8 +60,12 @@ bool Box::intersect(
 }
 
 
-bool Box::intersect(Ray const& r, float& dist) const {
-  glm::vec3 dir = glm::normalize(r.direction);
+bool Box::intersect(Ray const& ray, float& dist) const {
+  
+  //needed for transformations:
+  Ray_T r = ray.transform(world_transformation_inv());
+  auto orig = glm::vec3(r.origin);
+  auto dir = glm::normalize(glm::vec3(r.direction));
 
   /*
     t-values: scalar of ray vector, 
@@ -79,24 +83,27 @@ bool Box::intersect(Ray const& r, float& dist) const {
   float mini, maxi;
   float tmin, tmax;
 
-  tmin = std::min((min_.x - r.origin.x) * (1/dir.x), //multiply with inverted vector
-                  (max_.x - r.origin.x) * (1/dir.x));
-  tmax = std::max((min_.x - r.origin.x) * (1/dir.x),
-                  (max_.x - r.origin.x) * (1/dir.x));
+  tmin = std::min((min_.x - orig.x) * (1/dir.x), //multiply with inverted vector
+                  (max_.x - orig.x) * (1/dir.x));
+  tmax = std::max((min_.x - orig.x) * (1/dir.x),
+                  (max_.x - orig.x) * (1/dir.x));
 
-  mini = (min_.y - r.origin.y) * (1/dir.y);
-  maxi = (max_.y - r.origin.y) * (1/dir.y);
+  mini = (min_.y - orig.y) * (1/dir.y);
+  maxi = (max_.y - orig.y) * (1/dir.y);
   tmin = std::max(tmin, std::min(mini, maxi));
   tmax = std::min(tmax, std::max(mini, maxi));
 
 
-  mini = (min_.z - r.origin.z) * (1/dir.z);
-  maxi = (max_.z - r.origin.z) * (1/dir.z);
+  mini = (min_.z - orig.z) * (1/dir.z);
+  maxi = (max_.z - orig.z) * (1/dir.z);
   tmin = std::max(tmin, std::min(mini, maxi));
   tmax = std::min(tmax, std::max(mini, maxi));
 
   //is there a distance between the two intersection points?
   if (tmax < std::max<float>(0.0, tmin)) return false;
+
+  //direction is calculated in world coordinate system (not transformed)
+  dir = glm::normalize(ray.direction);
 
   //calculate distance between origin and intersection point (pythagoras):
    dist = std::sqrt(  (dir.x*tmin * dir.x*tmin) 
