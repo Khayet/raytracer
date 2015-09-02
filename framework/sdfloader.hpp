@@ -8,6 +8,7 @@
 #include "scene.hpp"
 #include "shape.hpp"
 #include "sphere.hpp"
+#include "triangle.hpp"
 #include <fstream>
 #include <map>
 #include <unordered_map>
