@@ -276,7 +276,7 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
   glm::vec3 image_point = position + dist_vec + pos_on_plane;
   glm::vec3 direc_shot = glm::normalize(image_point - position);
   
-  //std::cout << direc_shot.x << ", " << direc_shot.y << ", " << direc_shot.z << std::endl;
+  std::cout << direc_shot.x << ", " << direc_shot.y << ", " << direc_shot.z << std::endl;
   
   return Ray(position, direc_shot);
 }
