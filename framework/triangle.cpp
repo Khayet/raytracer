@@ -48,11 +48,20 @@ return 0;
   return os;
 }
 
-bool Triangle::intersect(Ray const& r) const {
- return true;
+bool Triangle::intersect(Ray const& ray) const {
+ float distance = 0.0;
+ return intersect(ray, distance);
 }
 
-bool Triangle::intersect(Ray const& r, float& dist) const {
+bool Triangle::intersect(Ray const& ray, float& dist) const {
+  Ray_T r = ray.transform(world_transformation());
+  auto orig = glm::vec3(r.origin);
+  auto dir = glm::normalize(glm::vec3(r.direction));
+  glm::vec3 straw_man;
+  //std::cout<<"Do you even intersect? SPHERE"<< std::endl;
+  return glm::intersectRayTriangle(
+      orig, dir,
+      avertex(), bvertex(),cvertex(), straw_man);
   return true;
 }
 
