@@ -185,6 +185,14 @@ TEST_CASE("ŕay_transform", "[transform]") {
   REQUIRE(ray.origin.x == Approx(2.0));
 }
 
+TEST_CASE("box_translate", "[translate]") {
+  Box bb{ {1.0,1.0,1.0}, {2.0,2.0,2.0} };
+  glm::vec3 v{1.0,1.0,1.0};
+
+  bb.translate(v);
+  Ray r{ {0.5,0.5,0.5}, {1.0,1.0,1.0}};
+  REQUIRE(bb.intersect(r));
+}
 
 int main(int argc, char *argv[])
 {

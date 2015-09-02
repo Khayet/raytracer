@@ -48,22 +48,29 @@ bool Sphere::intersect(
     Ray const& ray, 
     float& dist, 
     std::shared_ptr<Shape> & ptr) const{
-  return Sphere::intersect(ray, dist);
+  return intersect(ray, dist);
 }
 
 bool Sphere::intersect(Ray const& ray, float& dist) const {
   
-  Ray_T r = ray.transform(world_transformation());
+  Ray_T r = ray.transform(world_transformation_inv());
   auto orig = glm::vec3(r.origin);
   auto dir = glm::normalize(glm::vec3(r.direction));
 
   //std::cout<<"Do you even intersect? SPHERE"<< std::endl;
-  return glm::intersectRaySphere(
+  bool result = glm::intersectRaySphere(
       orig, dir,
       center(), radius()*radius(),
       dist);
 
-  //return result;
+  dir = glm::normalize(ray.direction);
+  //calculate correct distance:
+  glm::intersectRaySphere(
+    ray.origin, dir,
+    center(), radius()*radius(),
+    dist);
+
+  return result;
 }
 
 glm::vec3 Sphere::intersect_normal(Ray const& ray) const{
