@@ -4,7 +4,11 @@
 #include "color.hpp"
 #include "material.hpp"
 #include "ray.hpp"
-#include "shape.hpp"
+#include <memory>
+
+class Shape ;
+
+
 
 struct Raystructure{
   Raystructure() 
@@ -13,21 +17,24 @@ struct Raystructure{
 		material_{
 			Material{Color{0.0,0.0,0.0},
 				       Color{0.0,0.0,0.0}, 
-				       Color{0.0,0.0,0.0}}}{}
+				       Color{0.0,0.0,0.0}}},
+    shape_ptr_{nullptr}{}
 			
 	Raystructure (
 	  glm::vec3 const& origin, 
 	  glm::vec3 const& direction, 
 	  Color const& curr_color, 
 	  Material const& material,
-	  double distance, 
+	  double const& distance, 
 	  glm::vec3 const& normal,
-	  bool is_hit) 
+	  bool const& is_hit, 
+	  std::shared_ptr<Shape> const& shape_ptr) 
 	  : origin_{origin}, direction_{direction}, 
 	intersection_{(distance * direction.x), (distance * direction.y),(distance * direction.z)}, 
 	eye_ray_{origin, direction}, curr_color_{curr_color}, material_{material}, distance_{distance},  
 	  normal_{normal},
-	  is_hit_{is_hit}{}
+	  is_hit_{is_hit},
+	  shape_ptr_{shape_ptr}{}
 	Raystructure (Raystructure const& copy_raystruct) 
 	  : origin_{copy_raystruct.origin_}, 
 	  direction_{copy_raystruct.direction_}, 
@@ -37,8 +44,8 @@ struct Raystructure{
     material_{copy_raystruct.material_},
     distance_{copy_raystruct.distance_},  
 	  normal_{copy_raystruct.normal_},
-	  is_hit_{copy_raystruct.is_hit_}
-	  {}
+	  is_hit_{copy_raystruct.is_hit_},
+	  shape_ptr_{copy_raystruct.shape_ptr_}{}
 
   glm::vec3 origin_;
   glm::vec3 direction_;
@@ -49,5 +56,6 @@ struct Raystructure{
 	double distance_;
   glm::vec3 normal_;
   bool is_hit_;
+  std::shared_ptr<Shape> shape_ptr_;
 };
 #endif

@@ -140,16 +140,23 @@ glm::vec3 Box::intersect_normal(Ray const& ray) const{
 }
 
 Raystructure Box::raystruct_intersect(Ray const& r) const {
+  Raystructure returner{r.origin, r.direction, Color{0,0,0}, 
+		                  material(), std::numeric_limits<float>::max(),	
+		                  glm::vec3{0, 0, 0},false, nullptr};
   bool intersect_test =false;
   float distance = 0;
   intersect_test = intersect(r, distance);
   if (true == intersect_test){
-    return Raystructure{r.origin, r.direction, Color{0,0,0}, 
-		                  material(), distance,	intersect_normal(r),intersect_test};
+    returner.origin_ = r.origin;
+    returner.direction_ = r.direction;
+    returner.curr_color_ = Color {0,0,0};
+    returner.material_ = material();
+    returner.distance_ = distance;
+    returner.normal_ = intersect_normal(r); 
+    returner.is_hit_= intersect_test;
+    returner.shape_ptr_ = std::make_shared<Box>(*this);
 	}
-	return Raystructure{r.origin, r.direction, Color{0,0,0}, 
-		                  material(), std::numeric_limits<float>::max(),	
-		                  glm::vec3{0, 0, 0},intersect_test};
+	return returner;
 }
 
 void Box::translate(glm::vec3 const& t_vec) {
