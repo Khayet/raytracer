@@ -29,10 +29,7 @@ public:
   glm::mat4 world_transformation() const { return world_transformation_; }
   glm::mat4 world_transformation_inv() const { return world_transformation_inv_; }
 
-  glm::mat4 set_matrix(glm::mat4 const& mat) { 
-    world_transformation_ = mat;
-    world_transformation_inv_ = glm::inverse(mat);
-  }
+  glm::mat4 set_matrix(glm::mat4 const&);
 
   virtual double area() const = 0;
   virtual double volume() const = 0;

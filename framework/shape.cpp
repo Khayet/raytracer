@@ -20,6 +20,10 @@ Shape::Shape(Material const& material, std::string const& n) : material_{materia
   return material_;
 }
 
+glm::mat4 Shape::set_matrix(glm::mat4 const& mat) { 
+  world_transformation_ = mat;
+  world_transformation_inv_ = glm::inverse(mat);
+}
 
 /* virtual */ std::ostream& Shape::print(std::ostream& os) const {
   //not implemented yet

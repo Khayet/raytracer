@@ -52,10 +52,14 @@ bool Sphere::intersect(
 }
 
 bool Sphere::intersect(Ray const& ray, float& dist) const {
-  glm::vec3 dir = glm::normalize(ray.direction);
+  
+  Ray_T r = ray.transform(world_transformation());
+  auto orig = glm::vec3(r.origin);
+  auto dir = glm::normalize(glm::vec3(r.direction));
+
   //std::cout<<"Do you even intersect? SPHERE"<< std::endl;
   return glm::intersectRaySphere(
-      ray.origin, dir,
+      orig, dir,
       center(), radius()*radius(),
       dist);
 
