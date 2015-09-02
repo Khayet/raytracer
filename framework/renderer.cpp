@@ -52,7 +52,7 @@ void Renderer::render() {
 }
 
 void Renderer::render(Scene const& scene) {
- /* int ray_depth = 3;                      //Tiefe der Strahlen
+ int ray_depth = 3;                      //Tiefe der Strahlen
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
       float distance = 0.0;
@@ -62,24 +62,19 @@ void Renderer::render(Scene const& scene) {
       bool pixel_drawn = false;
       Raystructure intersect_struct 
                 = scene.composite_ptr_->raystruct_intersect(pixel_ray);
-			
-        //std::cout << x << ", " << y << std::endl;
-        
+
       if (intersect_struct.distance_ > 0 && 
           min_distance > intersect_struct.distance_) {          
 							
           pixel_drawn = true;
           min_distance = distance;
-          //std::cout<<"DOES INTERSECT "<< std::endl;
+
 					Pixel p(x,y);
           p.color = shade(scene, intersect_struct.material_, intersect_struct);
 					write(p);
 				} else {
           if (false == pixel_drawn) {
-						//std::cout << pixel_ray.direction.x << " " << pixel_ray.direction.y << " " << pixel_ray.direction.z << std::endl;
-						//std::cout << intersect_struct.distance_ <<  std::endl;
-
-            //std::cout<<"NO " << std::endl;
+	
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -87,9 +82,7 @@ void Renderer::render(Scene const& scene) {
 			  }
 		  }
     }
-    //std::cout << "GROESSE: " << scene.materials_.size();
   ppm_.save(filename_);
-*/
 }
 
 void Renderer::write(Pixel const& p) {
@@ -121,10 +114,10 @@ Color Renderer::shade (
     Color specular = {0.0,0.0,0.0};
     Color ambient = {0.0,0.0,0.0};
 
+    bool in_shadow = false;
+
     for (int i = 0; i < scene.lights_.size(); ++i) {      
 
-      float shadow_factor = 1; //If 0 nullify diffuse and specular summand 
-      
       //sum up ambient light:
       ambient.r += scene.lights_[i].intensity_amb_.r;
       ambient.g += scene.lights_[i].intensity_amb_.g;
@@ -148,35 +141,26 @@ Color Renderer::shade (
         (raystructure.intersection_.z + 
           (raystructure.normal_ - raystructure.intersection_).z * 0.000001)};
 
-      glm::vec3 incidence = scene.lights_[i].position_ - raystructure.intersection_;
+      glm::vec3 incidence = glm::normalize(scene.lights_[i].position_ - raystructure.intersection_);
       Ray light_ray = {hit, incidence}; 
-
-      bool in_shadow = scene.composite_ptr_->intersect(light_ray);         
+/*
+      if (raystructure.shape_ptr_ != nullptr) {
+        Ray_T light_ray_T = 
+          light_ray.transform(raystructure.shape_ptr_->world_transformation_inv());
+        Ray light = {glm::vec3(light_ray_T.origin), glm::vec3(light_ray_T.direction)};
+        light_ray = light;
+      } 
+*/      
       Raystructure shadow_point = scene.composite_ptr_->raystruct_intersect(light_ray);
-      if (shadow_point.is_hit_ != in_shadow) {
-			//	std::cout << "EROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR" << in_shadow << std::endl;       
-      }
-      if (true == shadow_point.is_hit_) {
-			  shadow_factor = 0;
-			}
-			/*
-      std::cout << "What kind of Shadow?" << in_shadow << std::endl;       
-      std::cout << "Intersektion (" << raystructure.intersection_.x << ", " << raystructure.intersection_.y << ", " << raystructure.intersection_.z << ") " << std::endl;
-      std::cout << "Lichtstart (" << light_orig.x << ", " << light_orig.y << ", " << light_orig.z << ") " << std::endl;
-      std::cout << "Lichtstrecke (" << light_orig.x << ", " << light_orig.y << ", " << light_orig.z << ") " << std::endl;
+      in_shadow = shadow_point.is_hit_;
 
-      std::cout << "Shadowpoint (" << shadow_point.intersection_.x << ", " << shadow_point.intersection_.y << ", " << shadow_point.intersection_.z << ") " << std::endl;
-      std::cout << "Distance (" << shadow_point.distance_ << ", " << shadow_point.distance_ << ", " << shadow_point.distance_ << ") " << std::endl;
-      */
+      glm::vec3 normal = glm::normalize(raystructure.normal_);
       
-      glm::vec3 normal = raystructure.normal_;
-      glm::normalize(normal);
-      
-      float dotProd_dif = glm::dot(light_ray.direction, normal);
+      float dotProd_dif = glm::dot(incidence, normal);
  
-      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif*material.color_kd().r * shadow_factor;
-      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif*material.color_kd().g * shadow_factor;
-      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif*material.color_kd().b * shadow_factor;
+      diffuse.r += scene.lights_[i].intensity_dif_.r * dotProd_dif/**material.color_kd().r*/;
+      diffuse.g += scene.lights_[i].intensity_dif_.g * dotProd_dif/**material.color_kd().g*/;
+      diffuse.b += scene.lights_[i].intensity_dif_.b * dotProd_dif/**material.color_kd().b*/;
 
       diffuse.r = std::fmax(0.0, std::fmin(1.0, diffuse.r));
       diffuse.g = std::fmax(0.0, std::fmin(1.0, diffuse.g));
@@ -188,11 +172,6 @@ Color Renderer::shade (
             (dot product of normalized reflection and spectator vector) 
           ^ (specular coefficient of material)
       */
-      /*
-      glm::vec3 reflection = shape_ptr->intersect_normal(raystructure) + light_ray.direction;     
-      reflection = {(reflection.x * (-1)), (reflection.y * (-1)), (reflection.z * (-1))};
-      reflection = glm::normalize(reflection);
-      */
 
       float dot_temp = glm::dot(normal, glm::normalize(scene.lights_[i].position_ - raystructure.intersection_));
       glm::vec3 minuend = 
@@ -203,23 +182,12 @@ Color Renderer::shade (
       glm::vec3 eyeray_direction = glm::normalize(raystructure.intersection_-scene.camera_.position());
       float dotProd_spec = glm::dot(reflection, eyeray_direction);
       
-      /* DEBUG
-      std::cout << "Reflection: " << reflection.x << " "
-      << reflection.y <<" "<< reflection.z << " " << std::endl;
-      std::cout << "Eyeray: "<< eyeray_direction.x << " " << eyeray_direction.y 
-      << " " << eyeray_direction.z << " " << std::endl;
-      std::cout << "DOTProduct_spec: " << dotProd_spec << std::endl;
-      std::cout << "Normal: " << normal.x << " "
-      << normal.y <<" "<< normal.z << " " << std::endl;      
-      std::cout << "DOTProductTemp: " << dot_temp << std::endl;
-      */
-      
       specular.r += scene.lights_[i].intensity_dif_.r * material.color_ks().r 
-                  * pow(dotProd_spec, material.m()) * shadow_factor;
+                  * pow(dotProd_spec, material.m());
       specular.g += scene.lights_[i].intensity_dif_.g * material.color_ks().g 
-                  * pow(dotProd_spec, material.m()) * shadow_factor;
+                  * pow(dotProd_spec, material.m());
       specular.b += scene.lights_[i].intensity_dif_.b * material.color_ks().b 
-                  * pow(dotProd_spec, material.m()) * shadow_factor;
+                  * pow(dotProd_spec, material.m());
 
       specular.r = std::fmax(0.0, std::fmin(1.0, specular.r));
       specular.g = std::fmax(0.0, std::fmin(1.0, specular.g));
@@ -232,10 +200,8 @@ Color Renderer::shade (
 
     //only apply coefficient once, since it's the same material:
     diffuse *= material.color_kd(); 
-    //std::cout << "diff: " << diffuse << "spec: " << specular << "amb: " << ambient;
-    shade_color = diffuse + specular + ambient;
 
-    //std::cout << "(" << shade_color.r << ", " << shade_color.g << ", " << shade_color.b << ")" << "\n";
+    shade_color = /*diffuse + specular +*/ ambient;
 
     return shade_color;
   }
@@ -263,23 +229,13 @@ Ray Renderer::shootRay(int x, int y, Scene const& scene)	{
 
   float dist = 0.5 / std::tan(0.5*fov_hor);
   glm::vec3 dist_vec = dir * dist;
-  /*
-  std::cout << "dist_vec = " << "(" << dist_vec.x << ", "
-            << dist_vec.y << ", " 
-            << dist_vec.z << ")\n";
-  */
+
   float x_pos = static_cast<float>(x) / static_cast<float>(width_) -0.5;
   float y_pos = ratio_inv * (static_cast<float>(y) / static_cast<float>(height_)) -0.5;
   glm::vec3 pos_on_plane = right*x_pos + up*y_pos;
-  
-  /*
-  std::cout << "pos_on_plane = " << "(" << pos_on_plane.x << ", "
-            << pos_on_plane.y << ", " << pos_on_plane.z << ")\n";
-  */
+
   glm::vec3 image_point = position + dist_vec + pos_on_plane;
   glm::vec3 direc_shot = glm::normalize(image_point - position);
-  
-  std::cout << direc_shot.x << ", " << direc_shot.y << ", " << direc_shot.z << std::endl;
   
   return Ray(position, direc_shot);
 }

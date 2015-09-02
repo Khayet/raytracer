@@ -52,47 +52,33 @@ bool Sphere::intersect(
 }
 
 bool Sphere::intersect(Ray const& ray, float& dist) const {
-  
+/*
   Ray_T r = ray.transform(world_transformation_inv());
   auto orig = glm::vec3(r.origin);
   auto dir = glm::normalize(glm::vec3(r.direction));
-
-  //std::cout<<"Do you even intersect? SPHERE"<< std::endl;
-  bool result = glm::intersectRaySphere(
-      orig, dir,
-      center(), radius()*radius(),
-      dist);
-
-  dir = glm::normalize(ray.direction);
-  //calculate correct distance:
-  glm::intersectRaySphere(
-    ray.origin, dir,
+*/
+  return glm::intersectRaySphere(
+    ray.origin, glm::normalize(ray.direction),
     center(), radius()*radius(),
     dist);
-
-  return result;
 }
 
 glm::vec3 Sphere::intersect_normal(Ray const& ray) const{
 	float distance = 0;
-	glm::vec3 temp = glm::normalize(ray.direction);
+	glm::vec3 dir = glm::normalize(ray.direction);
 	bool intersect_test = intersect(ray, distance);
-  glm::vec3 intersection ={ray.origin +glm::vec3{(distance * temp.x),
-		(distance * temp.y),
-		(distance * temp.z)}};  
-  glm::vec3 normal = (intersection - center_);
-  normal = glm::normalize(normal);
-  return normal;
+  glm::vec3 intersection = ray.origin + (distance * dir);  
+  return glm::normalize(intersection - center_);
 }
 
 Raystructure Sphere::raystruct_intersect(Ray const& r) const {
   Raystructure returner{r.origin, r.direction, Color{0,0,0}, 
 		                  material(), std::numeric_limits<float>::max(),	
 		                  glm::vec3{0, 0, 0},false, nullptr};
-  bool intersect_test =false;
+  bool intersect_test = false;
   float distance = 0;
   intersect_test = intersect(r, distance);
-  if (true == intersect_test){
+  if (intersect_test) {
     returner.origin_ = r.origin;
     returner.direction_ = r.direction;
     returner.curr_color_ = Color{0,0,0};
