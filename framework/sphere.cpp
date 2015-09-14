@@ -1,24 +1,17 @@
 #include "sphere.hpp"
 //
-Sphere::Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {
-  std::cout << "ctor sphere ()" << "\n";
-  }  
-Sphere::Sphere(glm::vec3 const& c, double r) : 
-  Shape{}, center_{c}, radius_{r} {
-    std::cout << "ctor sphere (center, radius)" << "\n";
-  }
+Sphere::Sphere() : Shape{}, center_{glm::vec3{0.0, 0.0, 0.0}}, radius_{0.0} {}
+
+Sphere::Sphere(glm::vec3 const& c, double r) :
+  Shape{}, center_{c}, radius_{r} {}
 
 Sphere::Sphere(Material const& material, std::string const& n, glm::vec3 const& c, double r) :
-    Shape{material, n}, center_{c}, radius_{r} {
-      std::cout << "ctor sphere (material, name, center, radius)" << "\n";
-    }
+    Shape{material, n}, center_{c}, radius_{r} {}
 
 Sphere::Sphere(glm::vec3 const& c, double r, Material const& material, std::string const& n) :
-    Shape{material, n}, center_{c}, radius_{r} {
-      std::cout << "ctor sphere (center, radius, material, name)" << "\n";
-    }
+    Shape{material, n}, center_{c}, radius_{r} {}
 
-Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
+Sphere::~Sphere() {}
 
 /* virtual */ double Sphere::area() const {
   return 4.0 * PI * (radius_ * radius_);
@@ -35,8 +28,8 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
   os << "  material   :  " << material();
 
   os << "  center  :  "
-    << "(" << center().x << "," << center().y << "," 
-    << center().z << ")" << "\n"; 
+    << "(" << center().x << "," << center().y << ","
+    << center().z << ")" << "\n";
 
   os << "  radius  :  " << radius() << "\n";
   os << "  area    :  " << area() << "\n";
@@ -45,8 +38,8 @@ Sphere::~Sphere() { std::cout << "Sphere::~Sphere" << "\n"; }
   return os;
 }
 bool Sphere::intersect(
-    Ray const& ray, 
-    float& dist, 
+    Ray const& ray,
+    float& dist,
     std::shared_ptr<Shape> & ptr) const{
   return intersect(ray, dist);
 }
@@ -67,13 +60,13 @@ glm::vec3 Sphere::intersect_normal(Ray const& ray) const{
 	float distance = 0;
 	glm::vec3 dir = glm::normalize(ray.direction);
 	bool intersect_test = intersect(ray, distance);
-  glm::vec3 intersection = ray.origin + (distance * dir);  
+  glm::vec3 intersection = ray.origin + (distance * dir);
   return glm::normalize(intersection - center_);
 }
 
 Raystructure Sphere::raystruct_intersect(Ray const& r) const {
-  Raystructure returner{r.origin, r.direction, Color{0,0,0}, 
-		                  material(), std::numeric_limits<float>::max(),	
+  Raystructure returner{r.origin, r.direction, Color{0,0,0},
+		                  material(), std::numeric_limits<float>::max(),
 		                  glm::vec3{0, 0, 0},false, nullptr};
   bool intersect_test = false;
   float distance = 0;
@@ -84,7 +77,7 @@ Raystructure Sphere::raystruct_intersect(Ray const& r) const {
     returner.curr_color_ = Color{0,0,0};
     returner.material_ = material();
     returner.distance_ = distance;
-    returner.normal_ = intersect_normal(r); 
+    returner.normal_ = intersect_normal(r);
     returner.is_hit_= intersect_test;
     returner.shape_ptr_ = std::make_shared<Sphere>(*this);
 	}

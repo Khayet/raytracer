@@ -38,7 +38,7 @@ TEST_CASE("aufgabe 6.3", "[shapes]") {
   Box box2{glm::vec3{2.0, 33.0, 1.75}, glm::vec3{0.0, 42.0, 2.33}};
   REQUIRE("" == box2.name());
 
-  Box box3{Material{}, {"box3"}, 
+  Box box3{Material{}, {"box3"},
     glm::vec3{2.0, 33.0, 1.75}, glm::vec3{0.0, 42.0, 2.33}};
   REQUIRE("box3" == box3.name());
 
@@ -48,7 +48,7 @@ TEST_CASE("aufgabe 6.3", "[shapes]") {
   Sphere sph2{glm::vec3{-2.0, 3.0, 11.33}, 0.72};
 
 
-  Sphere sph3{Material{}, {"sphere3"}, 
+  Sphere sph3{Material{}, {"sphere3"},
     glm::vec3{0.0, 0.52, 1.33}, 12};
 }
 
@@ -56,14 +56,14 @@ TEST_CASE("aufgabe 6.4", "[print]") {
   Sphere sph1{Material{}, {"tennis ball"}, glm::vec3{}, 5.12};
   sph1.print(std::cout);
 
-  Box box1{Material{}, {"green box"}, 
+  Box box1{Material{}, {"green box"},
     glm::vec3{}, glm::vec3{2.0, 3.0, 0.33}};
-  
+
   std::cout << box1;
 }
 
 TEST_CASE("aufgabe 6.5", "[print_overload]") {
-  Box box{Material{}, {"red box"}, 
+  Box box{Material{}, {"red box"},
     glm::vec3{0.0, 0.0, 0.0}, glm::vec3{2.0, 2.0, 2.0}};
 
   std::cout << box;
@@ -109,7 +109,7 @@ TEST_CASE("aufgabe 6.8", "[virtual]") {
   Material red{red_color, red_color,red_color};
   //glm::vec3 position(0,0);
   glm::vec3 position{0.0,0.0,0.0};
-	
+
   Sphere* s1 = new Sphere(position, 1.2, red, "sphere0");
   Shape* s2 = new Sphere(position, 1.2, red, "sphere1");
 
@@ -129,7 +129,7 @@ TEST_CASE("aufgabe 6.10", "[intersect]") {
   REQUIRE(3.4641016151377544 == Approx(distance));
 
   REQUIRE(box1.intersect(ray1));
-} 
+}
 
 TEST_CASE("aufgabe 8intersect", "[8intersect]") {
   Ray ray1{{0.0,0.0,0.0}, {0, -0.447214, -0.894427}};
@@ -142,18 +142,7 @@ TEST_CASE("aufgabe 8intersect", "[8intersect]") {
   REQUIRE(test == true);
 
   REQUIRE(box1.intersect(ray1));
-} 
-
-/* Obsolete intersection need now raystructure
-TEST_CASE("Sphere", "[intersect_normal]") {
-  Sphere sph{{0.0,0.0,0.0}, 1.0};
-  glm::vec3 intersection{1.0, 0.0, 0.0};
-  glm::vec3 normal = sph.intersect_normal(intersection);
-  REQUIRE(normal.x == 1.0);
-  REQUIRE(normal.y == 0.0);
-  REQUIRE(normal.z == 0.0);
 }
-*/
 
 TEST_CASE("SDFloader", "[load]") {
   SDFloader test;
@@ -161,13 +150,15 @@ TEST_CASE("SDFloader", "[load]") {
   Scene loaded(test.load(filepath));
 }
 
-TEST_CASE("Renderer", "[render]") {
-  Composite charl; // Kompositiontest
+TEST_CASE("checker_test", "[render]") {
+  Renderer rend(300, 300, "checker_board");
+  rend.render();
+}
 
+TEST_CASE("Renderer", "[render]") {
   SDFloader loader;
   std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded(loader.load(filepath));
-  charl.print(std::cout);
 }
 
 TEST_CASE("ŕay_transform", "[transform]") {

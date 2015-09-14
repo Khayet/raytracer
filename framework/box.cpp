@@ -1,21 +1,20 @@
 #include "box.hpp"
 
 
-Box::Box() : 
+Box::Box() :
     Shape{},
     min_{glm::vec3{0.0, 0.0, 0.0}},
-    max_{glm::vec3{0.0, 0.0, 0.0}} { /*std::cout << "ctor box ()" << "\n";*/ }
+    max_{glm::vec3{0.0, 0.0, 0.0}} {}
 
-Box::Box(glm::vec3 const& min, glm::vec3 const& max) : 
-    Shape{}, min_{min}, max_{max} { /*std::cout << "ctor box (min, max)" << "\n";*/}
+Box::Box(glm::vec3 const& min, glm::vec3 const& max) :
+    Shape{}, min_{min}, max_{max} {}
 
 Box::Box(Material const& material, std::string const& n,
     glm::vec3 const& min, glm::vec3 const& max) :
     Shape{material, n}, min_{min}, max_{max} {
-      //std::cout << "ctor box (material, name, min, max)" << "\n";
     }
 
-Box::~Box() { std::cout << "Box::~Box" << "\n"; }
+Box::~Box() {}
 
 /* virtual */ double Box::area() const {
     // 6*(area of one side)
@@ -24,8 +23,8 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
 
 /* virtual */ double Box::volume() const {
   //length * width * height
-  return std::abs(max_.x - min_.x) 
-    * std::abs(max_.y - min_.y) 
+  return std::abs(max_.x - min_.x)
+    * std::abs(max_.y - min_.y)
     * std::abs(max_.z - min_.z);
 }
 
@@ -35,12 +34,12 @@ Box::~Box() { std::cout << "Box::~Box" << "\n"; }
   os << "  name    :  " << name() << "\n";
   os << "  material   :  " << material();
 
-  os << "  minimum :  " 
+  os << "  minimum :  "
     << "(" << min().x << "," << min().y << "," << min().z << ")" << "\n";
-  
+
   os << "  maximum :  "
     << "(" << max().x << "," << max().y << "," << max().z << ")" << "\n";
-      
+
   os << "  area    :  " << area() << "\n";
   os << "  volume  :  " << volume() << "\n";
 */
@@ -53,28 +52,28 @@ bool Box::intersect(Ray const& r) const {
 }
 
 bool Box::intersect(
-    Ray const& ray, 
-    float& dist, 
+    Ray const& ray,
+    float& dist,
     std::shared_ptr<Shape> & ptr) const{
   return Box::intersect(ray, dist);
 }
 
 
 bool Box::intersect(Ray const& ray, float& dist) const {
-  
+
   //needed for transformations:
   Ray_T r = ray.transform(world_transformation_inv());
   auto orig = glm::vec3(r.origin);
   auto dir = glm::normalize(glm::vec3(r.direction));
 
   /*
-    t-values: scalar of ray vector, 
+    t-values: scalar of ray vector,
     calculated by solving ray = min(min_.x, max_x) or ray = max(min_.x, max_.x)
     respectively.
   */
 
   /*
-    mini: possible t-values of intersect point on the box side nearer to 
+    mini: possible t-values of intersect point on the box side nearer to
             ray.origin.
     maxi: possible t-values of  intersect point on the far side of the box.
     tmin: t-value of intersection point on near box side
@@ -106,7 +105,7 @@ bool Box::intersect(Ray const& ray, float& dist) const {
   dir = glm::normalize(ray.direction);
 
   //calculate distance between origin and intersection point (pythagoras):
-   dist = std::sqrt(  (dir.x*tmin * dir.x*tmin) 
+   dist = std::sqrt(  (dir.x*tmin * dir.x*tmin)
                     + (dir.y*tmin * dir.y*tmin)
                     + (dir.z*tmin * dir.z*tmin) );
   //std::cout<<"Do you even intersect? BOX"<< std::endl;
@@ -114,8 +113,8 @@ bool Box::intersect(Ray const& ray, float& dist) const {
 }
 
 glm::vec3 Box::intersect_normal(Ray const& ray) const{
-//	std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y << 
-//	raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x << 
+//	std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y <<
+//	raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x <<
 //	raystructure.direction_.y<< raystructure.direction_.z << " "<< std::endl;
   float distance_inters = 0;
   bool intersect_test = intersect(ray, distance_inters);
@@ -147,8 +146,8 @@ glm::vec3 Box::intersect_normal(Ray const& ray) const{
 }
 
 Raystructure Box::raystruct_intersect(Ray const& r) const {
-  Raystructure returner{r.origin, r.direction, Color{0,0,0}, 
-		                  material(), std::numeric_limits<float>::max(),	
+  Raystructure returner{r.origin, r.direction, Color{0,0,0},
+		                  material(), std::numeric_limits<float>::max(),
 		                  glm::vec3{0, 0, 0},false, nullptr};
   bool intersect_test =false;
   float distance = 0;
@@ -159,7 +158,7 @@ Raystructure Box::raystruct_intersect(Ray const& r) const {
     returner.curr_color_ = Color {0,0,0};
     returner.material_ = material();
     returner.distance_ = distance;
-    returner.normal_ = intersect_normal(r); 
+    returner.normal_ = intersect_normal(r);
     returner.is_hit_= intersect_test;
     returner.shape_ptr_ = std::make_shared<Box>(*this);
 	}

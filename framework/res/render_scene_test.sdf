@@ -1,18 +1,19 @@
 define material red 1 0 0 1 0 0 1 0 0 1
-define material blue 0 0 1 0 0 1 0 0 1 1 
+define material blue 0 0 1 0 0 1 0 0 1 1
 define material green 0 1 0 0 1 0 0 1 0 1
-define material yellow 1 1 0 1 1 0 1 1 0 1 
+define material yellow 1 1 0 1 1 0 1 1 0 1
 define shape box rbottom -100 -80 -200 100 80 -100 red
 define shape box footbox -80 -80 -200 0 -5 -3 red
 define shape sphere bsphere 0 0 -100 50 yellow
 define shape sphere redsphere 3 3 -5 5 yellow
 define shape box bluebox 4 5 -5 1.7 2 6 blue
 define shape sphere roterHase 0 -1 -5 2.2 blue
+
+define shape composite branch_one  roterHase
+#define shape composite branch_two  redsphere
+#define shape composite branch_third roterHase
+
 # light
 define light sun 1000 1700 0 0.2 0.2 0.2 .8 .8 .8
-# camera 
+# camera
 define camera eye 100.0 0 0 0 0 0 -1 0 1 0
-# ... and go
-define shape composite branch_one  roterHase 
-#define shape composite branch_two  redsphere 
-#define shape composite branch_third roterHase 

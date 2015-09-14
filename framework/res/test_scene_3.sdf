@@ -1,21 +1,28 @@
+# materials
 define material red 1 0 0 1 0 0 1 0 0 1
-define material blue 0 0 1 0 0 1 0 0 1 1 
-define material purple 0 0.5 1 0 0.5 1 0 0.5 1 1 
+define material blue 0 0 1 0 0 1 0 0 1 1
+define material purple 0 0.5 1 0 0.5 1 0 0.5 1 1
+
+# shapes
 define shape sphere left_front 3 0 -8 1 red
 define shape sphere left_back 2 0 -12 2 blue
 define shape sphere right_back -2 0 -12 2 blue
 define shape sphere right_front -3 0 -8 1 red
-define shape box up 0 -4 -10 0 -6 -10 1 purple
-define shape box down 0 4 -10 0 6 -10 1 purple
-define shape composite all left_front left_back right_front right_back up down
+
+define shape box up  0 -4 -10 0 -6 -10 blue
+define shape box down 0 4 -10 0 6 -10 blue
+
+#define shape composite all left_front left_back right_front right_back up down
 
 # light
-#define light sun 0 0 100 1 1 1 0 0 0
+define light sun 0 0 100 1 1 1 0 0 0
 define light lamp 0 0 -7 .2 .2 .2 .4 .4 .4
-# camera 
+
+# camera
 define camera eye 90.0 0 0 0 0 0 -1 1 1 0
 
-transform left_front translate 400 0 0 
+# transforms
+transform left_front translate 400 0 0
 
-# ... and go
-render eye testScene3.ppm 600 600 
+# render
+render eye testScene3.ppm 600 600
