@@ -1,8 +1,9 @@
 TODO:
-  - delete shapes_ and dependencies in Scene
-  - delete shapes_ and database_ and dependencies in Composite
+  - delete unnecessary constructors and destructors
   - replace Raystructure with Hit
   - combine intersect and intersect_normal functions of box, sphere and triangle
+  - delete shapes and dependencies in Scene
 
 DONE:
-  - move shootRay to Camera
+  - delete shapes_ and dependencies in Scene
+  - delete shapes_ and database_ and dependencies in Composite

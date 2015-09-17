@@ -127,7 +127,6 @@ Scene SDFloader::load(std::string const& filename) {
 
             auto shared_composite = std::make_shared<Composite>(temp_composite);
             shapes.push_back(shared_composite);
-            // Add to Composite database
             map_children.insert(std::make_pair(composite_name, shared_composite));
             composite_.insert(std::make_pair(composite_name, shared_composite));
           }
@@ -186,11 +185,11 @@ Scene SDFloader::load(std::string const& filename) {
 
         Camera cam(out_camera_name, out_fov_x, out_eye_pos, out_dir, out_up);
         Material root_mat{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
-        Composite root{root_mat, "root", composite_, map_children};
+        Composite root{root_mat, "root", map_children};
         std::shared_ptr<Composite> shared_composite = std::make_shared<Composite>(root);
         Renderer rend{out_x_res, out_y_res, out_file_name};
 
-        rend.render(Scene(materials, shapes, lights_, shared_composite, cam));
+        rend.render(Scene(materials, lights_, shared_composite, cam));
       }
     }
   }
@@ -198,16 +197,16 @@ Scene SDFloader::load(std::string const& filename) {
   if (read_camera) {
     Camera camera_scene(out_camera_name, out_fov_x, out_eye_pos, out_dir, out_up);
     Material root_mat{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
-    Composite root{root_mat, "root", composite_, map_children};
+    Composite root{root_mat, "root", map_children};
     std::shared_ptr<Composite> shared_composite = std::make_shared<Composite>(root);
-    Scene read_scene{materials, shapes, lights_, shared_composite, camera_scene};
+    Scene read_scene{materials, lights_, shared_composite, camera_scene};
     return read_scene;
   }
 
   Material root_mat{"Composite", Color{0,0,0}, Color{0,0,0},Color{0,0,0}, 0};
-  Composite root{root_mat, "root", composite_, map_children};
+  Composite root{root_mat, "root", map_children};
   std::shared_ptr<Composite> shared_composite = std::make_shared<Composite>(root);
-  Scene default_read{materials, shapes, lights_, shared_composite,
+  Scene default_read{materials, lights_, shared_composite,
     Camera("Default", 4.0, {0,0,0},{0,0,-1.0},{0,1.0,0})};
   return default_read;
 }
