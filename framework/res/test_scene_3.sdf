@@ -25,4 +25,4 @@ define camera eye 90.0 0 0 0 0 0 -1 1 1 0
 transform left_front translate 400 0 0
 
 # render
-render eye testScene3.ppm 600 600
+#render eye testScene3.ppm 600 600

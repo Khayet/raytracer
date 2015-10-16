@@ -6,7 +6,6 @@
 #include "shape.hpp"
 
 class Box: public Shape {
-//
 public:
   Box();
   Box(glm::vec3 const& min, glm::vec3 const& max);
@@ -16,26 +15,22 @@ public:
 
   glm::vec3 min() const { return min_; }
   glm::vec3 max() const { return max_; }
- 
-  /* virtual */ double area() const /* override */;
-  /* virtual */ double volume() const /* override */;
 
-  /* virtual */ std::ostream& print(std::ostream&) const /* override */;
+  double area() const override;
+  double volume() const override;
+
+  std::ostream& print(std::ostream&) const override;
 
   bool intersect(Ray const&) const;
   bool intersect(Ray const&, float& dist) const;
   bool intersect(
-    Ray const& ray, 
-    float& dist, 
+    Ray const& ray,
+    float& dist,
     std::shared_ptr<Shape> & ptr) const;
   glm::vec3 intersect_normal(Ray const& ray) const;
   Raystructure raystruct_intersect(Ray const& r) const;
-  
-  void translate(glm::vec3 const&); 
- /* virtual void scale(double) override;
-  virtual void rotate(double) override;
-  virtual void rotate(glm::vec3 const&) override;
-  */
+
+  void translate(glm::vec3 const&);
 private:
   glm::vec3 min_;
   glm::vec3 max_;

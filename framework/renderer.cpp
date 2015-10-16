@@ -55,25 +55,21 @@ void Renderer::render(Scene const& scene) {
 
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
-      float distance = 0.0;
       float min_distance = std::numeric_limits<float>::max();
       Ray pixel_ray = scene.camera_.shoot_ray(x, y, width(), height());
 
       bool pixel_drawn = false;
       Raystructure intersect_struct = scene.composite_ptr_->raystruct_intersect(pixel_ray);
 
-      if (intersect_struct.distance_ > 0 &&
-          min_distance > intersect_struct.distance_) {
-
+      if (intersect_struct.distance_ > 0 && min_distance > intersect_struct.distance_) {
           pixel_drawn = true;
-          min_distance = distance;
+          min_distance = 0.0;
 
 					Pixel p(x,y);
           p.color = shade(scene, intersect_struct.material_, intersect_struct);
 					write(p);
 				} else {
           if (!pixel_drawn) {
-
             Pixel p(x,y);
             p.color = Color(0.5, 0.5, 0.5);
             write(p);
@@ -142,14 +138,7 @@ Color Renderer::shade (
 
       glm::vec3 incidence = glm::normalize(scene.lights_[i].position_ - raystructure.intersection_);
       Ray light_ray = {hit, incidence};
-/*
-      if (raystructure.shape_ptr_ != nullptr) {
-        Ray_T light_ray_T =
-          light_ray.transform(raystructure.shape_ptr_->world_transformation_inv());
-        Ray light = {glm::vec3(light_ray_T.origin), glm::vec3(light_ray_T.direction)};
-        light_ray = light;
-      }
-*/
+
       Raystructure shadow_point = scene.composite_ptr_->raystruct_intersect(light_ray);
       in_shadow = shadow_point.is_hit_;
 

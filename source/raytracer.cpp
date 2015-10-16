@@ -7,12 +7,12 @@ int main(int argc, char* argv[])
 {
   std::string const filename = "./ppm_tes.ppm";
   SDFloader loader;
-  std::string filepath = "../framework/res/render_scene_test.sdf";
+  std::string filepath = "../framework/res/test_scene_3.sdf";
   Scene loaded{loader.load(filepath)};
-  unsigned const width = 300;
-  unsigned const height = 300;
+  unsigned const width = 600;
+  unsigned const height = 600;
   Renderer app(width, height, filename);
-  
+
   std::thread thr([&]() { app.render(loaded); });
 
   Window win(glm::ivec2(width,height));
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
   }
 
   thr.join();
-  
+
 
   return 0;
 }

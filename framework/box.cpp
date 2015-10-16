@@ -1,35 +1,27 @@
 #include "box.hpp"
 
 
-Box::Box() :
-    Shape{},
-    min_{glm::vec3{0.0, 0.0, 0.0}},
-    max_{glm::vec3{0.0, 0.0, 0.0}} {}
+Box::Box() : Shape{}, min_{glm::vec3{0.0, 0.0, 0.0}}, max_{glm::vec3{0.0, 0.0, 0.0}} {}
 
-Box::Box(glm::vec3 const& min, glm::vec3 const& max) :
-    Shape{}, min_{min}, max_{max} {}
+Box::Box(glm::vec3 const& min, glm::vec3 const& max) : Shape{}, min_{min}, max_{max} {}
 
-Box::Box(Material const& material, std::string const& n,
-    glm::vec3 const& min, glm::vec3 const& max) :
-    Shape{material, n}, min_{min}, max_{max} {
-    }
+Box::Box(Material const& material, std::string const& n, glm::vec3 const& min, glm::vec3 const& max) :
+    Shape{material, n}, min_{min}, max_{max} {}
 
 Box::~Box() {}
 
-/* virtual */ double Box::area() const {
+double Box::area() const /* override */ {
     // 6*(area of one side)
     return 6.0 * (std::abs(max_.x - min_.x) * std::abs(max_.x - min_.x));
 }
 
-/* virtual */ double Box::volume() const {
+double Box::volume() const /* override */ {
   //length * width * height
-  return std::abs(max_.x - min_.x)
-    * std::abs(max_.y - min_.y)
-    * std::abs(max_.z - min_.z);
+  return std::abs(max_.x - min_.x) * std::abs(max_.y - min_.y) * std::abs(max_.z - min_.z);
 }
 
-/* virtual */ std::ostream& Box::print(std::ostream& os) const {
-/*  os << "\n";
+std::ostream& Box::print(std::ostream& os) const /* override */ {
+  os << "\n";
   os << "Box \"" << name() << "\" : \n";
   os << "  name    :  " << name() << "\n";
   os << "  material   :  " << material();
@@ -42,7 +34,6 @@ Box::~Box() {}
 
   os << "  area    :  " << area() << "\n";
   os << "  volume  :  " << volume() << "\n";
-*/
   return os;
 }
 
@@ -108,36 +99,33 @@ bool Box::intersect(Ray const& ray, float& dist) const {
    dist = std::sqrt(  (dir.x*tmin * dir.x*tmin)
                     + (dir.y*tmin * dir.y*tmin)
                     + (dir.z*tmin * dir.z*tmin) );
-  //std::cout<<"Do you even intersect? BOX"<< std::endl;
   return true;
 }
 
 glm::vec3 Box::intersect_normal(Ray const& ray) const{
-//	std::cout << " Origin (" << raystructure.origin_.x << raystructure.origin_.y <<
-//	raystructure.origin_.z<< ") Direction (" << raystructure.direction_.x <<
-//	raystructure.direction_.y<< raystructure.direction_.z << " "<< std::endl;
   float distance_inters = 0;
   bool intersect_test = intersect(ray, distance_inters);
-  glm::vec3 intersection = {(distance_inters * ray.direction.x),(distance_inters * ray.direction.y),(distance_inters * ray.direction.z)};
+  glm::vec3 hit = {(distance_inters * ray.direction.x),(distance_inters * ray.direction.y),(distance_inters * ray.direction.z)};
   glm::vec3 center = {((min_.x + max_.x)/2),((min_.y + max_.y)/2),((min_.z + max_.z)/2)};
   glm::vec3 normal = {0.0, 0.0, 0.0};
-  float min_distance = std::numeric_limits<float>::max();
 
+  float epsilon = 400*std::numeric_limits<float>::max(); //arbitrary small number
 
-  float epsilon = 400*min_distance; //arbitrary small number
-
-  glm::vec3 hit = intersection;
-  float diff = 0.0;
-  diff = hit.x - min_.x;
+  float diff = hit.x - min_.x;
   if (diff < epsilon) normal = {-1.0, 0.0, 0.0};
+
   diff = hit.x - max_.x;
   if (diff < epsilon) normal = {1.0, 0.0, 0.0};
+
   diff = hit.x - min_.y;
   if (diff < epsilon) normal = {0.0, -1.0, 0.0};
+
   diff = hit.x - max_.y;
   if (diff < epsilon) normal = {0.0, 1.0, 0.0};
+
   diff = hit.x - min_.z;
   if (diff < epsilon) normal = {0.0, 0.0, 1.0};
+
   diff = hit.x - max_.z;
   if (diff < epsilon) normal = {0.0, 0.0, -1.0};
 
